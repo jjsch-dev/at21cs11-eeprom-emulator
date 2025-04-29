@@ -23,18 +23,18 @@ This repository contains a SWI (Single-Wire Interface) EEPROM emulator for the A
 - **Makefile**: supports `--section-start` for placing the EEPROM data section.  
 - **Linker Flags**: `-Wl,--section-start,.eeprom_data=0x08004C00` to pin the buffer.
 
-##Build & Flash:
+## Build & Flash:
 
 - **Clone the repository:
 git clone https://github.com/<your-user>/py32f0-eeprom-emulator.git
 cd py32f0-eeprom-emulator
 
--- **Build:
+- **Build:
 make all
 
-Flash the resulting swi_eeprom.elf (or .hex/.bin) to your PY32F0 device via your programmer of choice
+- **Flash the resulting swi_eeprom.elf (or .hex/.bin) to your PY32F0 device via your programmer of choice
 
-##Configuration: – 
+## Configuration: – 
 - **To change EEPROM contents, edit eeprom_data.h (the buffer is tagged with attribute((section(".eeprom_data"))))
-– **Enable-pin defaults to PA1; modify ENABLE_PIN/ENABLE_PORT in main.c if needed
-– **To turn on debug toggling or UART prints, define ENABLE_DEBUG_PIN and/or ENABLE_UART_DEBUG in main.c
+- **Enable-pin defaults to PA1; modify ENABLE_PIN/ENABLE_PORT in main.c if needed
+- **To turn on debug toggling or UART prints, define ENABLE_DEBUG_PIN and/or ENABLE_UART_DEBUG in main.c
