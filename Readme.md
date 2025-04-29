@@ -32,7 +32,7 @@ cd py32f0-eeprom-emulator
 - **Build**:
 make all
 
-- **Flash the resulting swi_eeprom.elf (or .hex/.bin) to your PY32F0 device via your programmer of choice
+- **Flash** the resulting swi_eeprom.elf (or .hex/.bin) to your PY32F0 device via your programmer of choice
 
 ## Configuration: – 
 - **To change EEPROM contents**, edit eeprom_data.h (the buffer is tagged with attribute((section(".eeprom_data"))))
