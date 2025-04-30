@@ -1,6 +1,9 @@
 /**
  * @file debug.h
- * @brief Debug support: UART logging and debug-pin toggling.
+ * @brief Implementation of debug support functions.
+ *
+ * Provides UART-based logging and GPIO pin toggling for debugging purposes.
+ * Functions are conditionally compiled based on ENABLE_UART_DEBUG and ENABLE_DEBUG_PIN.
  */
 
 #ifndef DEBUG_H

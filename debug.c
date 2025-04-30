@@ -1,6 +1,9 @@
 /**
  * @file debug.c
  * @brief Implementation of debug support functions.
+ *
+ * Provides UART-based logging and GPIO pin toggling for debugging purposes.
+ * Functions are conditionally compiled based on ENABLE_UART_DEBUG and ENABLE_DEBUG_PIN.
  */
 
 #include "debug.h"
@@ -24,6 +27,7 @@ static void uart_debug_init(void)
 {
 	LL_GPIO_InitTypeDef gpio_init = {0};
 	
+	// Enable GPIOA clock
 	LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
 	
 	// Configure PA2 for USART1 TX if needed.
@@ -35,8 +39,10 @@ static void uart_debug_init(void)
 	gpio_init.Alternate = LL_GPIO_AF1_USART1; 
 	LL_GPIO_Init(UART_TX_GPIO_Port, &gpio_init);
 
+	// Enable USART1 clock
     LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_USART1);
 
+	// Configure USART for TX only, 8N1, 115200 baud
     LL_USART_SetBaudRate(USART1, SystemCoreClock,
                         LL_USART_OVERSAMPLING_16, 115200);
     LL_USART_SetDataWidth(USART1, LL_USART_DATAWIDTH_8B);
@@ -47,7 +53,11 @@ static void uart_debug_init(void)
     LL_USART_SetTransferDirection(USART1, LL_USART_DIRECTION_TX);
     LL_USART_Enable(USART1);
 }
-#endif
+#endif // ENABLE_UART_DEBUG
+
+// -----------------------------
+// Public API Implementation
+// -----------------------------
 
 void debug_init(void)
 {
@@ -56,7 +66,10 @@ void debug_init(void)
 #endif
 
 #ifdef ENABLE_DEBUG_PIN
+	 // Enable GPIOA clock
     LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
+    
+    // Configure debug pin as push-pull output
     LL_GPIO_InitTypeDef gpio_init = {0};
     gpio_init.Pin        = DBG_PIN;
     gpio_init.Mode       = LL_GPIO_MODE_OUTPUT;
@@ -78,7 +91,7 @@ void debug_log(const char *fmt, ...)
 
     for (char *p = buf; *p; ++p) {
         LL_USART_TransmitData8(USART1, *p);
-        while (!LL_USART_IsActiveFlag_TC(USART1));
+        while (!LL_USART_IsActiveFlag_TC(USART1)); // Wait for TX buffer empty
         LL_USART_ClearFlag_TC(USART1);
     }
 #endif
