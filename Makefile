@@ -42,7 +42,7 @@ PYOCD_EXE		?= /home/jjsch/3d_printer/prusa_original/rmx35/xlcd/eeprom/tools/stli
 # C and CPP source folders
 #CDIRS		:= Examples/PY32F0xx/HAL/GPIO/LED_Toggle 
 # Single C and CPP source files
-CFILES		:= swi_eeprom.c \
+CFILES		:= at21cs11_emulator.c \
 			   debug.c \
 			   py32f0xx_it.c
 
