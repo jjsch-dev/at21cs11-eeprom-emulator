@@ -1,40 +1,163 @@
-# AT21CS11 EEPROM Emulation on PY32F0
+# AT21CS11 EEPROM Emulation on Puya PY32F0xx
 
-This repository contains a SWI (Single-Wire Interface) EEPROM emulator for the AT21CS11 device, running on the PUYA PY32F0 microcontroller (Cortex-M0+ @ 24 MHz) using the LL (Low-Layer) peripheral library.
+This repository contains an **AT21CS11 EEPROM emulator over SWI (Single-Wire Interface)** implemented on the **Puya PY32F0xx** Cortex-M0+ microcontroller using **LL (Low Layer)** drivers.
 
-## Features
+It uses precise timing and GPIO polling to emulate the behavior of the original IC, responding to commands like manufacturer ID query and memory access. The internal EEPROM buffer persists across resets by placing it in a dedicated flash section that isn't erased during firmware updates.
 
-- **SWI Protocol Emulation**: Implements host-driven bit timing, reset/discovery sequence, ACK/NACK, and data transfer over a single open-drain line.  
-- **EEPROM & Manufacturer ID**: Emulates both the main EEPROM (128 bytes) and manufacturer ID responses per AT21CS11 spec.  
-- **Timing Accuracy**: Uses TIM1 as a 1 µs free-running timer; pulse-width measurement and generation for sub-10 µs timings.  
-- **Minimal Polling**: Main loop polls GPIO input for edges; timing-critical output (“logic 0” pulses) driven directly in the edge handlers.  
-- **Enable Pin Gating**: External `ENABLE` pin (active-low) blocks all emulation until released.  
-- **Optional Debug**: Compile-time flags to enable GPIO toggling (DBG_PIN) and UART debug output.
+🔗 [GitHub Repository](https://github.com/jjsch-dev/at21cs11-eeprom-emulator)
 
-## Hardware Requirements
+The project emulates basic commands like:
+- EEPROM read/write
+- Manufacturer ID query
+- Start/stop condition detection for host communication
+- ACK/NACK handling
+- Bit-level timing control via polling and manual GPIO toggling
 
-- **Microcontroller**: PUYA PY32F0 series in SOP8 (24 MHz HSI clock).  
-- **Pull-up Resistor**: 1 kΩ pull-up on the SWI line.  
-- **Flash Layout**: Last page of flash (e.g. `0x08004C00`) reserved for `eeprom_buffer`.
+All global state transitions are handled in the main loop with precise µs-level timing to mimic the behavior of the original IC.
 
-## Software Requirements
+---
 
-- **Toolchain**: ARM GCC (arm-none-eabi-gcc) with `-Os` optimization.  
-- **Makefile**: supports `--section-start` for placing the EEPROM data section.  
-- **Linker Flags**: `-Wl,--section-start,.eeprom_data=0x08004C00` to pin the buffer.
+## 📦 Features
 
-## Build & Flash:
+- ✅ Bit-banged SWI protocol implementation
+- ✅ Supports command decoding for:
+  - `OPCODE_MANUFACTURER_ID`
+  - `OPCODE_EEPROM_ACCESS`
+- ✅ ACK/NACK handling without external hardware
+- ✅ Precise µs-level timing control using TIM1
+- ✅ Optional UART logging via `ENABLE_UART_DEBUG`
+- ✅ Debug pin support via `ENABLE_DEBUG_PIN`
+- ✅ EEPROM data stored in last flash page to survive firmware updates
+- ✅ No HAL or RTOS dependencies — minimal and fast
 
-- **Clone the repository**:
-git clone https://github.com/<your-user>/py32f0-eeprom-emulator.git
-cd py32f0-eeprom-emulator
+---
 
-- **Build**:
-make all
+## 🧰 Hardware Requirements
 
-- **Flash** the resulting swi_eeprom.elf (or .hex/.bin) to your PY32F0 device via your programmer of choice
+| Component       | Description |
+|------------------|-------------|
+| MCU              | Puya PY32F0 series (tested on SOP8 package) |
+| Clock Source     | Internal HSI oscillator set to 24 MHz |
+| SWI Pin          | PA10 (open-drain output) |
+| Enable Pin       | PA1 (active-low input) |
+| Debug GPIO (opt) | PA14 (toggled during activity for signal tracing) |
+| UART TX (opt)    | PA2 (for debug logging at 115200 bps) |
+| Pull-up resistor | 1 kΩ on the SWI line |
 
-## Configuration: – 
-- **To change EEPROM contents**, edit eeprom_data.h (the buffer is tagged with attribute((section(".eeprom_data"))))
-- **Enable-pin defaults to PA1**; modify ENABLE_PIN/ENABLE_PORT in main.c if needed
-- **To turn on debug toggling or UART prints**, define ENABLE_DEBUG_PIN and/or ENABLE_UART_DEBUG in main.c
+> [!IMPORTANT]
+> Last page of flash (e.g. `0x08004C00`) reserved for `eeprom_buffer`.
+
+> ⚠️ Important: The host must follow the expected bit timing. This code does not currently adapt dynamically to varying speeds.
+
+---
+
+## ⚙️ Software Requirements
+
+- ARM GCC toolchain (`arm-none-eabi-gcc`)
+- Makefile-based build system
+- Programmer compatible with PY32 MCUs (e.g., `st-flash`, `pyOCD`, etc.)
+- Linker support for section placement:
+  ```bash
+  -Wl,--section-start,.eeprom_data=0x08004C00
+
+> [!NOTE]
+> Ensure your startup code does NOT zero-initialize the .eeprom_data section.
+> This allows you to persist EEPROM values across resets and firmware updates. 
+
+---
+
+## 📁 File Structure
+├── README.md
+├── Makefile                # Set compiler, flags, memory layout
+├── main.c                  # Main logic, SWI protocol, state machine
+├── debug.h / debug.c       # Optional UART logging and debug pin support
+├── eeprom_data.h           # Contains manuf_id[] and eeprom_buffer[]
+
+---
+
+## ⚙️ Configuration Options
+ENABLE_START_CONDITION_DETECT   # Enables timeout-based start condition detection
+ENABLE_UART_DEBUG               # Enables UART-based logging via USART1
+ENABLE_DEBUG_PIN                # Toggles a debug GPIO pin during operation
+
+To configure pins:
+// In main.c
+#define SWI_PIN             LL_GPIO_PIN_10
+#define SWI_GPIO_Port       GPIOA
+
+#define ENABLE_PIN          LL_GPIO_PIN_1
+#define ENABLE_GPIO_Port    GPIOA
+
+#define DBG_PIN             LL_GPIO_PIN_14
+#define DBG_GPIO_Port       GPIOA
+
+---
+
+### 📑 Build & Flash Instructions
+
+## 🛠 Build & Flash
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/jjsch-dev/at21cs11-eeprom-emulator.git
+cd at21cs11-eeprom-emulator
+```
+2. **Build the project**
+
+```bash
+make
+```
+3. **Flash to the PY32F0xx device by SWD**
+
+```bash
+make flash
+```
+
+---
+
+### 📑 Known Limitations
+
+## ⚠️ Known Limitations
+
+- ❗ Polling-based design – could be improved with DMA or interrupts
+- ❗ Only one device address supported
+- ❗ EEPROM writes do not include checksum or persistence management
+- ❗ Host timing must be predictable and match expected thresholds
+
+---
+
+## 🚀 Future Improvements (Ideas)
+
+- [ ] Add adaptive bit timing calibration
+- [ ] Improve EEPROM persistence with CRC or wear leveling
+- [ ] Support for security register access
+- [ ] Implement proper USART TX FIFO for non-blocking debug prints
+- [ ] Add Python script for EEPROM image generation
+- [ ] Provide STM32CubeIDE project structure
+
+---
+
+## 📜 License
+
+[MIT License](LICENSE) – © jjsch-dev (2025)
+
+You can freely use and modify this code as long as you include the original license.
+
+## 🧑‍💻 Contributing
+
+For contributions or improvements:
+- Fork the project
+- Create a new branch
+- Submit a pull request
+
+Or open issues or feature requests directly on the repository.
+
+---
+
+## 📬 Contact & Credits
+
+- **Author**: jjsch-dev  
+- **Repository**: [GitHub Link](https://github.com/jjsch-dev/at21cs11-eeprom-emulator)
+
+---
