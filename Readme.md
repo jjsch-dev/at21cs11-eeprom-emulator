@@ -32,16 +32,28 @@ All global state transitions are handled in the main loop with precise µs-level
 
 ---
 
+## 🖼️ Hardware Schematic
+
+The following schematic illustrates the hardware connections for the AT21CS11 EEPROM emulator on the PY32F0xx microcontroller. This includes key components like the SWI interface, enable pin, debug pins, and pull-up resistors.
+
+![AT21CS11 EEPROM Emulator Schematic](images/schematic.png)
+
+> **Note**: The final version may adjust some details (e.g., power-on RC delay), but this provides a clear overview of the current design.
+
+---
+
 ## 🧰 Hardware Requirements
 
-| Component       | Description |
+| Component         | Description |
 |------------------|-------------|
-| MCU              | Puya PY32F0 series (tested on SOP8 package) |
+| MCU              | Puya PY32F002 series (tested on SOP8 package) |
 | Clock Source     | Internal HSI oscillator set to 24 MHz |
 | SWI Pin          | PA10 (open-drain output) |
 | Enable Pin       | PA1 (active-low input) |
-| Debug GPIO (opt) | PA14 (toggled during activity for signal tracing) |
+| Debug GPIO (opt) | PA3 (toggled during bit transitions for tracing) |
 | UART TX (opt)    | PA2 (for debug logging at 115200 bps) |
+| SWCLK / SWC      | PA14 (SWD clock for flashing and debugging) |
+| SWDIO / SWD      | PA13 (SWD data I/O for flashing and debugging) |
 | Pull-up resistor | 1 kΩ on the SWI line |
 
 > [!IMPORTANT]
