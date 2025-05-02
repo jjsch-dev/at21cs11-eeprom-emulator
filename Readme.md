@@ -128,6 +128,56 @@ make flash
 
 ---
 
+## 📝 SWI Protocol Overview
+
+The **AT21CS01/11 EEPROM device** operates as a slave device using a **single-wire digital serial interface (SWI)** to communicate with a host controller. The protocol is designed for simplicity and efficiency, utilizing an 8-bit data structure where power is provided via the SI/O pin.
+
+During communication, the state of the SI/O pin during specific time intervals determines the interpretation of data. Each bit frame transmits one data bit, and after eight bits (one byte), the receiving device must respond with either an **Acknowledge (ACK)** or **No Acknowledge (NACK)** response bit during a ninth bit window.
+
+---
+
+### 📊 Types of Data Transmitted Over the SI/O Line
+
+The following types of data are transmitted over the single-wire interface:
+
+1. **Reset and Discovery Response**
+   - Used by the master to reset the device and perform a general bus call to determine if any devices are present on the bus.
+   - **Waveform**: ![Figure 4-1: Reset and Discovery Response Waveform](images/figure_4-1.png)
+
+2. **Logic ‘0’ or Acknowledge (ACK)**
+   - Indicates a logic '0' or an ACK response.
+   - **Waveform**: ![Figure 4-2: Logic ‘0’ Input Condition Waveform](images/figure_4-2.png)
+
+3. **Logic ‘1’ or No Acknowledge (NACK)**
+   - Indicates a logic '1' or a NACK response.
+   - **Waveform**: ![Figure 4-3: Logic ‘1’ Input Condition Waveform](images/figure_4-3.png)
+
+4. **Start Condition**
+   - Marks the beginning of a command sequence.
+   - **Waveform**: ![Figure 4-4: Start Condition Waveform](images/figure_4-4.png)
+
+5. **Stop Condition**
+   - Marks the end of a command sequence.
+   - **Waveform**: ![Figure 4-5: Stop Condition Waveform](images/figure_4-5.png)
+
+---
+
+## 📚 Datasheet Reference
+
+For full details on the **AT21CS11 EEPROM** and its **Single-Wire Interface (SWI)**, please refer to the official Microchip datasheet:
+
+📄 [AT21CS11 Datasheet](docs/Microchip-AT21CS11.pdf)
+
+This document includes:
+- Full electrical specifications
+- Timing diagrams for all communication states (reset, discovery, ACK/NACK, start/stop)
+- Memory map and command set
+- Power-up and security register behavior
+
+> 💡 Tip: The timing thresholds used in this project (`THRESHOLD_RESET`, `THRESHOLD_BIT`, etc.) are derived from the timing diagrams in the datasheet. You may need to adjust them slightly depending on your host device's timing behavior.
+
+---
+
 ### 📑 Known Limitations
 
 ## ⚠️ Known Limitations
