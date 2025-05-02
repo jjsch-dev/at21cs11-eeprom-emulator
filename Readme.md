@@ -86,8 +86,8 @@ The following schematic illustrates the hardware connections for the AT21CS11 EE
     ├── at21cs11_emulator.c     # Core logic for SWI EEPROM emulation
     ├── debug.h / debug.c       # Optional UART logging and debug pin support
     ├── eeprom_data.h           # Declaration of EEPROM buffer and Manufacturer ID
-    ├── Makefile				# Build configuration and linker flags
-    └── README.md				# Project overview and instructions
+    ├── Makefile                # Build configuration and linker flags
+    └── README.md               # Project overview and instructions
 
 ---
 
