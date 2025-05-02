@@ -79,16 +79,15 @@ The following schematic illustrates the hardware connections for the AT21CS11 EE
 ---
 
 ## 📁 File Structure
-The repository is organized as follows:
-.
-├── README.md # Project overview and instructions
-├── Makefile # Build configuration and linker flags
-├── at21cs11_emulator.c # Core logic for SWI EEPROM emulation
-├── debug.h / debug.c # Optional UART logging and debug pin support
-├── eeprom_data.h # Declaration of EEPROM buffer and Manufacturer ID
-└── docs/ # Documentation folder
-└── Microchip-AT21CS11.pdf # Official AT21CS11 Datasheet from Microchip
 
+    .
+    ├── build                   # Compiled files (alternatively `dist`)
+    ├── docs                    # Documentation files (alternatively `doc`)
+    ├── src                     # Source files (alternatively `lib` or `app`)
+    ├── test                    # Automated tests (alternatively `spec` or `tests`)
+    ├── tools                   # Tools and utilities
+    ├── LICENSE
+    └── README.md
 ---
 
 ## ⚙️ Configuration Options
