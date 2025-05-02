@@ -92,20 +92,15 @@ The following schematic illustrates the hardware connections for the AT21CS11 EE
 ---
 
 ## ⚙️ Configuration Options
-ENABLE_START_CONDITION_DETECT   # Enables timeout-based start condition detection
-ENABLE_UART_DEBUG               # Enables UART-based logging via USART1
-ENABLE_DEBUG_PIN                # Toggles a debug GPIO pin during operation
 
-To configure pins:
-// In main.c
-#define SWI_PIN             LL_GPIO_PIN_10
-#define SWI_GPIO_Port       GPIOA
-
-#define ENABLE_PIN          LL_GPIO_PIN_1
-#define ENABLE_GPIO_Port    GPIOA
-
-#define DBG_PIN             LL_GPIO_PIN_14
-#define DBG_GPIO_Port       GPIOA
+| Macro                         | Description |
+|-------------------------------|-------------|
+| ENABLE_START_CONDITION_DETECT | Enables timeout-based start condition detection
+| ENABLE_UART_DEBUG             | Enables UART-based logging via USART1
+| ENABLE_DEBUG_PIN              | Toggles a debug GPIO pin during operation
+| SWI_PIN                       | Set the BUS pin, by default LL_GPIO_PIN_10
+| ENABLE_PIN                    | Set the enable pin, by default LL_GPIO_PIN_1
+| DBG_PIN                       | Set the debug toggle pin, by default LL_GPIO_PIN_14
 
 ---
 
