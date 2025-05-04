@@ -181,7 +181,6 @@ Ensure the following connections are made between the programmer and the PY32 MC
 ---
 
 ## 📁 File Structure
-your-repo/
     .
     ├── build                   	# Compiled files (ELF, HEX, BIN files)
     ├── docs                    	# Documentation folder 
