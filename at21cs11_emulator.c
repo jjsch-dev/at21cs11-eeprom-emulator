@@ -42,10 +42,10 @@
 #define ENABLE_START_CONDITION_DETECT   /**< Enables timeout detection for start condition */
 
 //  SWI Pin and Timing Definitions
-#define SWI_PIN           	LL_GPIO_PIN_10      /**< SWI pin on GPIOA */
-#define SWI_GPIO_Port     	GPIOA               /**< Port for SWI pin */
-#define ENABLE_PIN        	LL_GPIO_PIN_1       /**< Enable pin on GPIOA */
-#define ENABLE_GPIO_Port  	GPIOA               /**< Port for enable pin */
+#define SWI_PIN           	    LL_GPIO_PIN_10      /**< SWI pin on GPIOA */
+#define SWI_GPIO_Port           GPIOA               /**< Port for SWI pin */
+#define CHIP_ENABLE_PIN         LL_GPIO_PIN_1       /**< Enable pin on GPIOA */
+#define CHIP_ENABLE_GPIO_Port   GPIOA               /**< Port for enable pin */
 
 // Device Address Decoding Macros
 /** Format of an 8-bit device address byte:
@@ -58,22 +58,22 @@
  * Bits 3..1: device address (3 bits)
  * Bit  0   : read/write bit
  */
-#define AT21_OPCODE_MASK     0xF0U    /**< Opcode bits [7..4] */
-#define AT21_OPCODE_SHIFT    4        /**< Shift to align opcode in byte */
-#define AT21_ADDR_MASK       0x0EU    /**< Device address bits [3..1] */
-#define AT21_ADDR_SHIFT      1        /**< Shift to align address in byte */
-#define AT21_RW_MASK         0x01U    /**< Read/Write bit [0] */
+#define AT21_OPCODE_MASK            0xF0U   /**< Opcode bits [7..4] */
+#define AT21_OPCODE_SHIFT           4       /**< Shift to align opcode in byte */
+#define AT21_ADDR_MASK              0x0EU   /**< Device address bits [3..1] */
+#define AT21_ADDR_SHIFT             1       /**< Shift to align address in byte */
+#define AT21_RW_MASK                0x01U   /**< Read/Write bit [0] */
 
 ///@defgroup AT21_Commands AT21 Command Opcodes
 ///@{
-#define OPCODE_EEPROM_ACCESS    		0x0AU   /**< Read/Write the contents of the main memory array. */
-#define OPCODE_SEC_REG_ACCESS			0x0BU   /**< Read/Write the contents of the Security register. */
-#define OPCODE_LOCK_SEC_REG 			0x02U   /**< Permanently lock the contents of the Security register. */
-#define OPCODE_ROM_ZONE_REG_ACCESS 		0x07U   /**< Inhibit further modification to a zone of the EEPROM array. */
-#define OPCODE_FREEZE_ROM				0x01U   /**< Permanently lock the current state of the ROM Zone registers. */
-#define OPCODE_MANUFACTURER_ID 			0x0CU   /**< Query manufacturer and density of device. */
-#define OPCODE_STANDARD_SPEED			0x0DU   /**< Switch to Standard Speed mode operation (AT21CS01 only command, the AT21CS11 will NACK this command). */
-#define OPCODE_HIGH_SPEED				0x0EU   /**< Switch to High-Speed mode operation (AT21CS01 power-on default; AT21CS11 will ACK this command). */
+#define OPCODE_EEPROM_ACCESS        0x0AU   /**< Read/Write the contents of the main memory array. */
+#define OPCODE_SEC_REG_ACCESS       0x0BU   /**< Read/Write the contents of the Security register. */
+#define OPCODE_LOCK_SEC_REG         0x02U   /**< Permanently lock the contents of the Security register. */
+#define OPCODE_ROM_ZONE_REG_ACCESS  0x07U   /**< Inhibit further modification to a zone of the EEPROM array. */
+#define OPCODE_FREEZE_ROM           0x01U   /**< Permanently lock the current state of the ROM Zone registers. */
+#define OPCODE_MANUFACTURER_ID 	    0x0CU   /**< Query manufacturer and density of device. */
+#define OPCODE_STANDARD_SPEED       0x0DU   /**< Switch to Standard Speed mode operation (AT21CS01 only command, the AT21CS11 will NACK this command). */
+#define OPCODE_HIGH_SPEED           0x0EU   /**< Switch to High-Speed mode operation (AT21CS01 power-on default; AT21CS11 will ACK this command). */
 ///@}
 
 #define AT21_DEVICE_ADDR          	0x00U   /**< Define your device address (A2..A0) */
@@ -213,13 +213,13 @@ void mx_gpio_init(void)
     LL_GPIO_SetOutputPin(SWI_GPIO_Port, SWI_PIN);
 
     // PA1 as input for enable (low/disable)
-    gpio_init.Pin = ENABLE_PIN;
+    gpio_init.Pin = CHIP_ENABLE_PIN;
     gpio_init.Mode = LL_GPIO_MODE_INPUT;
     gpio_init.Speed = LL_GPIO_SPEED_FREQ_HIGH; 
     gpio_init.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
     gpio_init.Pull = LL_GPIO_PULL_NO;
-    LL_GPIO_Init(ENABLE_GPIO_Port, &gpio_init);
-    LL_GPIO_SetOutputPin(ENABLE_GPIO_Port, ENABLE_PIN);
+    LL_GPIO_Init(CHIP_ENABLE_GPIO_Port, &gpio_init);
+    LL_GPIO_SetOutputPin(CHIP_ENABLE_GPIO_Port, CHIP_ENABLE_PIN);
 }
 
 /**
@@ -256,7 +256,7 @@ void EXTI0_1_IRQHandler(void)
         LL_GPIO_SetOutputPin(SWI_GPIO_Port, SWI_PIN);
 
         // Wait in the IRQ for enable signal.
-        while (LL_GPIO_IsInputPinSet(ENABLE_GPIO_Port, ENABLE_PIN)); 
+        while (LL_GPIO_IsInputPinSet(CHIP_ENABLE_GPIO_Port, CHIP_ENABLE_PIN)); 
 
         LL_EXTI_ClearFlag(LL_EXTI_LINE_1);
     }
@@ -441,17 +441,17 @@ int main(void)
     debug_log("AT21CS11 emulation start\n");
 
     // Wait for enable is low.
-    while (LL_GPIO_IsInputPinSet(ENABLE_GPIO_Port, ENABLE_PIN));
+    while (LL_GPIO_IsInputPinSet(CHIP_ENABLE_GPIO_Port, CHIP_ENABLE_PIN));
 
     // Capture initial state of the SWI pin to detect future transitions
     swi_state = STATE_IDLE;
     uint32_t last_pin = LL_GPIO_ReadInputPort(SWI_GPIO_Port) & SWI_PIN;
 
-	/**
+    /**
      * @note Polling is used instead of IRQ-based edge detection for timing-critical sections.
      *       This avoids the latency and stack overhead associated with interrupt handling,
      *       which is crucial in bit-banged protocols like SWI where response timing must be precise.
-    */
+     */
     for (;;) {
         // Wait pin change
         uint32_t port = LL_GPIO_ReadInputPort(SWI_GPIO_Port);
@@ -469,12 +469,12 @@ int main(void)
                     last_pin ^= SWI_PIN;  // Simulate an edge transition because we forced the pin low manually
                      					  // Without this, the next external edge from the host could be missed
                     pulse_duration = LL_TIM_GetCounter(TIM1);
-     				/**
- 					 * Set the counter to MIN_LOW_PULSE instead of zero because this account for the 
- 					 * low pulse duration already driven.
- 					 * The host expects to read the bit level ~1.8µs after the rising edge.
- 					 * By aligning the timer here, we ensure the host has enough time to sample the bit.
- 					 */
+                    /**
+                     * Set the counter to MIN_LOW_PULSE instead of zero because this account for the 
+                     * low pulse duration already driven.
+                     * The host expects to read the bit level ~1.8µs after the rising edge.
+                     * By aligning the timer here, we ensure the host has enough time to sample the bit.
+                     */
                     LL_TIM_SetCounter(TIM1, MIN_LOW_PULSE); 
                     
                 } else {
