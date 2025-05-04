@@ -12,3 +12,6 @@ Misc/
 
 # Ignore the Device Family Pack folder
 /toolchain/pyocd/Puya.PY32F0xx_DFP.1.2.2/
+
+# Ignore the PY32F0 libray
+/toolchain/py32f0/py32f0-template-main/

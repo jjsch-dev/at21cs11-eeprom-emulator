@@ -103,7 +103,34 @@ Used to compile embedded C code for Cortex-M0+ architecture.
    ```
 ---
 
-### 2. pyOCD (for flashing and debugging via SWD)
+### 2. py32f0-template (PY32F0xx LL support library)
+
+This project uses the [IOsetting/py32f0-template](https://github.com/IOsetting/py32f0-template) library to simplify register-level access to the PY32F0xx peripherals.
+
+#### 🧩 Installation Steps
+
+1. **Clone** or extract the library inside **toolchain/py32f0/**
+
+   Option A: Clone via Git
+   ```bash
+   git clone https://github.com/IOsetting/py32f0-template.git toolchain/py32f0
+   ```
+
+   Option B: Download [ZIP](https://codeload.github.com/IOsetting/py32f0-template/zip/refs/heads/main) and extract
+   ```bash
+   unzip py32f0-template-main.zip -d toolchain/py32f0
+   ```
+   
+2. **Include** path in Makefile
+   ```bash
+   LIB_ROOT := toolchain/py32f0/py32f0-template-main/
+   ```
+> [!NOTE]
+> This project includes a tested version of the **py32f0-template** for reference only. It’s recommended to use the latest version from GitHub for bug fixes and improvements. 
+   	
+---
+
+### 3. pyOCD (for flashing and debugging via SWD)
 
 We use [pyOCD](https://pyocd.io/) to program the PY32F0xx microcontroller over SWD using an ST-Link or CMSIS-DAP programmer.
 
@@ -122,7 +149,7 @@ We use [pyOCD](https://pyocd.io/) to program the PY32F0xx microcontroller over S
    ```
 ---
 
-### 3. Device Support for PY32F0xx
+### 4. Device Support for PY32F0xx
 **pyOCD** does not natively support Puya PY32 MCUs, so we must provide a device pack file .
 
 ### 📦 Add PY32F0xx Support
@@ -157,7 +184,7 @@ We use [pyOCD](https://pyocd.io/) to program the PY32F0xx microcontroller over S
 
 ---
 
-### 4. Optional: Programmer Hardware
+### 5. Optional: Programmer Hardware
 
 To flash and debug the device, you'll need an **SWD-compatible programmer**. This project has been tested using:
 

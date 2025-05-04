@@ -53,8 +53,7 @@ ADIRS		:= User
 AFILES		:= 
 
 # Assuming you're inside 'source/swi_debug'
-#LIB_ROOT := /home/jjsch/3d_printer/prusa_original/rmx35/xlcd/eeprom/tools/py32f0-template-main/
-LIB_ROOT := ../../tools/py32f0-template-main/
+LIB_ROOT := toolchain/py32f0/py32f0-template-main/
 
 # Include paths
 INCLUDES	:= $(LIB_ROOT)Libraries/CMSIS/Core/Include \
