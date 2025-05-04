@@ -25,21 +25,21 @@
  */
 static void uart_debug_init(void)
 {
-	LL_GPIO_InitTypeDef gpio_init = {0};
+    LL_GPIO_InitTypeDef gpio_init = {0};
 	
-	// Enable GPIOA clock
-	LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
+    // Enable GPIOA clock
+    LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
 	
-	// Configure PA2 for USART1 TX if needed.
-	gpio_init.Pin = UART_TX_PIN;
-	gpio_init.Mode = LL_GPIO_MODE_ALTERNATE; 
-	gpio_init.Speed = LL_GPIO_SPEED_FREQ_HIGH; 
-	gpio_init.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-	gpio_init.Pull = LL_GPIO_PULL_NO;
-	gpio_init.Alternate = LL_GPIO_AF1_USART1; 
-	LL_GPIO_Init(UART_TX_GPIO_Port, &gpio_init);
+    // Configure PA2 for USART1 TX if needed.
+    gpio_init.Pin = UART_TX_PIN;
+    gpio_init.Mode = LL_GPIO_MODE_ALTERNATE; 
+    gpio_init.Speed = LL_GPIO_SPEED_FREQ_HIGH; 
+    gpio_init.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    gpio_init.Pull = LL_GPIO_PULL_NO;
+    gpio_init.Alternate = LL_GPIO_AF1_USART1; 
+    LL_GPIO_Init(UART_TX_GPIO_Port, &gpio_init);
 
-	// Enable USART1 clock
+    // Enable USART1 clock
     LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_USART1);
 
 	// Configure USART for TX only, 8N1, 115200 baud
