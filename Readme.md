@@ -200,9 +200,12 @@ We use [pyOCD](https://pyocd.io/) to program the PY32F0xx microcontroller over S
 
 ### 5. Optional: Programmer Hardware
 
-To flash and debug the device, you'll need an **SWD-compatible programmer**. This project has been tested using:
+To flash and debug the PY32F0xx microcontroller, an **SWD-compatible programmer** is required. The following image shows the ST-Link V2 programmer connected to the target board via a 10-pin connector.
+
+![St-link](images/st-link-v2.png)
 
 ✅ **ST-Link V2 clone** (widely available and low-cost)  
+
 Other supported options:
 - CMSIS-DAP compatible debugger
 - Black Magic Probe (alternative)
