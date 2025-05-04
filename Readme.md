@@ -15,6 +15,20 @@ The project emulates basic commands like:
 
 All global state transitions are handled in the main loop with precise µs-level timing to mimic the behavior of the original IC.
 
+## 🖼️ Hardware Setup
+
+The following image shows the physical implementation of the AT21CS11 EEPROM emulator on the PY32F0xx board:
+
+![Hardware Setup](hardware_setup.png)
+
+> 💡 Key components visible:
+> - **PY32F002AL15S6T MCU**: Core processing unit
+> - **SWD Pins**: SWCLK (SWC) and SWDIO (SWO) for debugging and flashing
+> - **EEPROM Programming Header**: Used for programming the device
+> - **Pull-up Resistors**: Ensures proper logic levels on critical pins
+
+This setup demonstrates how the emulator is integrated into a real-world application.
+
 ---
 
 ## 📦 Features
