@@ -308,6 +308,57 @@ The following types of data are transmitted over the single-wire interface:
 
 ---
 
+## 🧠 Microcontroller Overview: PUYA PY32F002AL15S6TU
+
+The **PUYA PY32F002AL15S6TU** is a low-cost, 32-bit ARM® Cortex®-M0+ microcontroller in an SOP-8 package. It provides all the necessary features to emulate the AT21CS11 EEPROM over a single-wire interface using bit-banged GPIO and precise timing control.
+
+![PY32F0xx Functional Modules](images/py32f002_block_diagram.png)
+
+This diagram illustrates how the various peripherals are interconnected.
+
+### 🔍 Key Features
+
+| Feature               | Specification |
+|-----------------------|---------------|
+| **Core**              | ARM Cortex-M0+ @ up to 24 MHz |
+| **Flash Memory**      | 20 KB (enough to store firmware + emulated EEPROM) |
+| **RAM**               | 3 KB SRAM |
+| **GPIO**              | Configurable open-drain pins with internal pull-ups |
+| **Timers**            | Two 16-bit timers for sub-microsecond edge detection and pulse generation |
+| **Communication**     | USART, SPI, I²C interfaces |
+| **ADC & Comparators** | 12-bit ADC, 2 comparators (not used in this project) |
+| **Voltage Range**     | 1.7 V – 5.5 V |
+| **Temperature Range** | -40 °C to +85 °C |
+| **Low-Power Modes**  | Sleep and Stop modes supported |
+
+> 📦 [Official Datasheet](docs/PY32F002A_datasheet_Rev.0.2_EN.pdf)
+
+---
+
+### ✅ Why This MCU Is Ideal for EEPROM Emulation
+
+- **Accurate Bit-Bang Timing**:  
+  The dual 16-bit timers and deterministic Cortex-M0+ instruction timing allow sub-microsecond delays required by the AT21CS11 protocol.
+
+- **Open-Drain GPIO Support**:  
+  Dynamic switching between input (high impedance) and output modes with internal pull-ups matches the single-wire, open-drain requirements of SWI communication.
+
+- **Sufficient Flash & RAM**:  
+  With 20 KB Flash and 3 KB SRAM, the chip comfortably supports:
+  - Bit-banged SWI logic
+  - Timer-based edge detection
+  - Optional debug logging
+  - Persistent memory emulation in flash
+
+- **Robust Communication Peripherals**:  
+  Built-in USART, SPI, and I²C are useful for debugging or future expansions (e.g., capturing external EEPROM signals).
+
+- **Cost-Effective & Compact**:  
+  At under $0.10 in volume and housed in a small SOP-8 package, it’s ideal for prototyping or high-volume deployments.
+
+By leveraging its precise timers, flexible GPIO, and ample memory, the PY32F002AL15S6TU becomes a highly capable platform for emulating an AT21CS11 EEPROM entirely in software.
+
+---
 ## 📚 Datasheet Reference
 
 For full details on the **AT21CS11 EEPROM** and its **Single-Wire Interface (SWI)**, please refer to the official Microchip datasheet:
