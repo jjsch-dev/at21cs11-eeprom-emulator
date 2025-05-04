@@ -19,7 +19,7 @@ All global state transitions are handled in the main loop with precise µs-level
 
 The following image shows the physical implementation of the AT21CS11 EEPROM emulator on the PY32F0xx board:
 
-![Hardware Setup](imaged/hardware_setup.png)
+![Hardware Setup](images/hardware_setup.png)
 
 > 💡 Key components visible:
 > - **PY32F002AL15S6T MCU**: Core processing unit
