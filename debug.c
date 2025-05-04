@@ -66,7 +66,7 @@ void debug_init(void)
 #endif
 
 #ifdef ENABLE_DEBUG_PIN
-	 // Enable GPIOA clock
+    // Enable GPIOA clock
     LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
     
     // Configure debug pin as push-pull output
