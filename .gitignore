@@ -7,5 +7,8 @@ Misc/
 # Ignore local Python env in toolchain
 /toolchain/pyocd/myenv/
 
+# Ignore local gcc-arm in toolchain
+/toolchain/gcc-arm/
+
 # Ignore the Device Family Pack folder
 /toolchain/pyocd/Puya.PY32F0xx_DFP.1.2.2/

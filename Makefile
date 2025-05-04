@@ -30,12 +30,13 @@ FLASH_PROGRM	?= pyocd
 
 ##### Toolchains #######
 
-ARM_TOOLCHAIN	?= /home/jjsch/3d_printer/prusa_original/rmx35/xlcd/eeprom/tools/gcc-arm/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi/bin
+ARM_TOOLCHAIN	?= toolchain/gcc-arm/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi/bin
 
 # path to JLinkExe
 JLINKEXE		?= /opt/SEGGER/JLink/JLinkExe
+
 # path to PyOCD
-PYOCD_EXE		?= /home/jjsch/3d_printer/prusa_original/rmx35/xlcd/eeprom/tools/stlink/venv/bin/pyocd
+PYOCD_EXE		?= toolchain/pyocd/myenv/bin/pyocd
 
 ##### Paths ############
 
