@@ -223,18 +223,21 @@ Ensure the following connections are made between the programmer and the PY32 MC
 
 ## 📁 File Structure
     .
-    ├── build                   	# Compiled files (ELF, HEX, BIN files)
-    ├── docs                    	# Documentation folder 
-    │ └── Microchip-AT21CS11.pdf 	# Official AT21CS11 Datasheet from Microchip
-    ├── toolchain               	# Local tools installation (optional / project-specific)
-    │ ├── gcc-arm                   # ARM GCC toolchain (arm-none-eabi-gcc)
-    │ ├── py32f0                    # PY32F0xx LL support library (py32f0-template)
-    │ └── pyocd                     # pyOCD + config files for flashing via SWD
-    ├── at21cs11_emulator.c     	# Core logic for SWI EEPROM emulation
-    ├── debug.h / debug.c       	# Optional UART logging and debug pin support
-    ├── eeprom_data.h           	# Declaration of EEPROM buffer and Manufacturer ID
-    ├── Makefile / rules.mk     	# Build configuration and linker flags
-    └── README.md               	# Project overview and instructions
+    ├── build                   	                # Compiled files (ELF, HEX, BIN files)
+    ├── docs                    	                # Documentation folder 
+    │ ├── Microchip-AT21CS11.pdf 	                # Official AT21CS11 Datasheet from Microchip
+    │ ├── PY32F002A_Reference_manual_ v1.0_EN.pdf 	# Reference Manual for Puya PY32F002A
+    │ ├── PY32F002A_datasheet_Rev.0.2_EN.pdf        # Datasheet for PY32F002A
+    │ └── PY32L020_Datasheet_V1.0.pdf               # Datasheet for faster PY32L0xx series
+    ├── toolchain               	                # Local tools installation (optional / project-specific)
+    │ ├── gcc-arm                                   # ARM GCC toolchain (arm-none-eabi-gcc)
+    │ ├── py32f0                                    # PY32F0xx LL support library (py32f0-template)
+    │ └── pyocd                                     # pyOCD + config files for flashing via SWD
+    ├── at21cs11_emulator.c     	                # Core logic for SWI EEPROM emulation
+    ├── debug.h / debug.c       	                # Optional UART logging and debug pin support
+    ├── eeprom_data.h           	                # Declaration of EEPROM buffer and Manufacturer ID
+    ├── Makefile / rules.mk     	                # Build configuration and linker flags
+    └── README.md               	                # Project overview and instructions
 
 ---
 
