@@ -249,7 +249,7 @@ Ensure the following connections are made between the programmer and the PY32 MC
 | ENABLE_UART_DEBUG             | Enables UART-based logging via USART1
 | ENABLE_DEBUG_PIN              | Toggles a debug GPIO pin during operation
 | SWI_PIN                       | Set the BUS pin, by default LL_GPIO_PIN_10
-| ENABLE_PIN                    | Set the enable pin, by default LL_GPIO_PIN_1
+| CHIP_ENABLE_PIN               | Set the chip enable pin, by default LL_GPIO_PIN_1
 | DBG_PIN                       | Set the debug toggle pin, by default LL_GPIO_PIN_14
 
 ---
