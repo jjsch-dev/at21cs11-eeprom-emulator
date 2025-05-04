@@ -181,15 +181,19 @@ Ensure the following connections are made between the programmer and the PY32 MC
 ---
 
 ## 📁 File Structure
-
+your-repo/
     .
-    ├── build                   # Compiled files
-    ├── docs                    # Documentation folder (Official AT21CS11 Datasheet from Microchip)
-    ├── at21cs11_emulator.c     # Core logic for SWI EEPROM emulation
-    ├── debug.h / debug.c       # Optional UART logging and debug pin support
-    ├── eeprom_data.h           # Declaration of EEPROM buffer and Manufacturer ID
-    ├── Makefile                # Build configuration and linker flags
-    └── README.md               # Project overview and instructions
+    ├── build                   	# Compiled files (ELF, HEX, BIN files)
+    ├── docs                    	# Documentation folder 
+    │ └── Microchip-AT21CS11.pdf 	# Official AT21CS11 Datasheet from Microchip
+    ├── toolchain               	# Local tools installation (optional / project-specific)
+    │ ├── gcc-arm/ 					# ARM GCC toolchain (arm-none-eabi-gcc)
+    │ └── pyocd/	 				# pyOCD + config files for flashing via SWD
+    ├── at21cs11_emulator.c     	# Core logic for SWI EEPROM emulation
+    ├── debug.h / debug.c       	# Optional UART logging and debug pin support
+    ├── eeprom_data.h           	# Declaration of EEPROM buffer and Manufacturer ID
+    ├── Makefile / rules.mk     	# Build configuration and linker flags
+    └── README.md               	# Project overview and instructions
 
 ---
 
