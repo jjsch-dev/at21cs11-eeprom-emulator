@@ -3,3 +3,9 @@ Build/
 
 # St-link directory
 Misc/
+
+# Ignore local Python env in toolchain
+/toolchain/pyocd/myenv/
+
+# Ignore the Device Family Pack folder
+/toolchain/pyocd/Puya.PY32F0xx_DFP.1.2.2/
