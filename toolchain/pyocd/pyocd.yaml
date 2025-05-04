@@ -1,5 +1,5 @@
 pack:
- - ./Puya.PY32F0xx_DFP.1.2.2.pack
+ - toolchain/pyocd/Puya.PY32F0xx_DFP.1.2.2.pack
 
 target_override: py32f002ax5
 
