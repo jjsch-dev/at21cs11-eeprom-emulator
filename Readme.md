@@ -382,7 +382,7 @@ This document includes:
 This implementation has several limitations that are important to understand before using or extending the project:
 
 - ❗ **Polling-based design** – The current implementation uses GPIO polling for edge detection instead of interrupts or DMA.  
-  This can be improved by using a faster CPU like the [PY32L020](docs/PY32L020 Datasheet V1.0.pdf) (48 MHz) for better timing resolution and lower CPU usage.
+  This can be improved by using a faster CPU like the [PY32L020](docs/PY32L020_Datasheet_V1.0.pdf) (48 MHz) for better timing resolution and lower CPU usage.
 
 - ❗ **Single device address support** – Only one device address is currently supported (`AT21_DEVICE_ADDR`).  
   Extending this to support multiple addresses would allow coexistence of multiple devices on the same SWI bus.
