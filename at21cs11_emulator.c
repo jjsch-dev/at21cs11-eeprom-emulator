@@ -42,7 +42,7 @@
 #define ENABLE_START_CONDITION_DETECT   /**< Enables timeout detection for start condition */
 
 //  SWI Pin and Timing Definitions
-#define SWI_PIN           	    LL_GPIO_PIN_10      /**< SWI pin on GPIOA */
+#define SWI_PIN                 LL_GPIO_PIN_10      /**< SWI pin on GPIOA */
 #define SWI_GPIO_Port           GPIOA               /**< Port for SWI pin */
 #define CHIP_ENABLE_PIN         LL_GPIO_PIN_1       /**< Enable pin on GPIOA */
 #define CHIP_ENABLE_GPIO_Port   GPIOA               /**< Port for enable pin */
@@ -76,15 +76,14 @@
 #define OPCODE_HIGH_SPEED           0x0EU   /**< Switch to High-Speed mode operation (AT21CS01 power-on default; AT21CS11 will ACK this command). */
 ///@}
 
-#define AT21_DEVICE_ADDR          	0x00U   /**< Define your device address (A2..A0) */
+#define AT21_DEVICE_ADDR            0x00U   /**< Define your device address (A2..A0) */
 
 /* Timing thresholds in microseconds (adjust as needed) */
-#define THRESHOLD_RESET     		100U    /**< If a low pulse >100µs => reset trigger */
-#define DISCOVERY_HIGH_MIN  		10U     /**< Discovery high pulse min */
-#define DISCOVERY_HIGH_MAX  		150U    /**< Discovery high pulse max */
-#define THRESHOLD_BIT       		5U      /**< Low pulse <5µs => logic '1'; otherwise '0' */
-#define MIN_LOW_PULSE       		5U      /**< For driving a '0' in transmit */
-#define TIMEOUT_START_US    		220U    /**< Timeout if no edge in 200uS (start/stop condition) */
+#define THRESHOLD_RESET             100U    /**< If a low pulse >100µs => reset trigger */
+#define DISCOVERY_HIGH_MIN          10U     /**< Discovery high pulse min */
+#define THRESHOLD_BIT               5U      /**< Low pulse <5µs => logic '1'; otherwise '0' */
+#define MIN_LOW_PULSE               5U      /**< For driving a '0' in transmit */
+#define TIMEOUT_START_US            220U    /**< Timeout if no edge in 200uS (start/stop condition) */
 
 
 /**
@@ -365,7 +364,7 @@ static void swi_decode_low(void)
 
     if (bit_count >= 8) {
         debug_toggle_pin();
-		debug_log("byte recv = 0x%02X\n", current_byte);
+        debug_log("byte recv = 0x%02X\n", current_byte);
 		
         uint8_t opcode  = (current_byte & AT21_OPCODE_MASK) >> AT21_OPCODE_SHIFT;
         uint8_t dev_addr = (current_byte & AT21_ADDR_MASK) >> AT21_ADDR_SHIFT;
@@ -467,7 +466,7 @@ int main(void)
                     LL_GPIO_SetOutputPin(SWI_GPIO_Port, SWI_PIN);
                     send_logic_0 = false;
                     last_pin ^= SWI_PIN;  // Simulate an edge transition because we forced the pin low manually
-                     					  // Without this, the next external edge from the host could be missed
+                                          // Without this, the next external edge from the host could be missed
                     pulse_duration = LL_TIM_GetCounter(TIM1);
                     /**
                      * Set the counter to MIN_LOW_PULSE instead of zero because this account for the 
