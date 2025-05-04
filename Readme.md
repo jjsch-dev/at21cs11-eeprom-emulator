@@ -381,18 +381,27 @@ This document includes:
 
 This implementation has several limitations that are important to understand before using or extending the project:
 
-- ❗ **Polling-based design** – The current implementation uses GPIO polling for edge detection instead of interrupts or DMA.  
-  This can be improved by using a faster CPU like the [PY32L020](docs/PY32L020_Datasheet_V1.0.pdf) (48 MHz) for better timing resolution and lower CPU usage.
-
-- ❗ **Single device address support** – Only one device address is currently supported (`AT21_DEVICE_ADDR`).  
-  Extending this to support multiple addresses would allow coexistence of multiple devices on the same SWI bus.
+- ❗ **Polling-based design** – Polling is used instead of IRQ-based edge detection in timing-critical sections.  
+  This avoids the latency and stack overhead associated with interrupt handling, ensuring fast response to host signals.  
+  However, the time consumed by processing logic (approx **1.3 µs**) leaves little room to add more features or complex logic.  
+  Using a faster CPU like the **[PY32L020](docs/PY32L020_Datasheet_V1.0.pdf)** running at **48 MHz** could improve performance,  
+  though note that **Flash access at 48 MHz adds a wait state**, so clock configuration must be optimized accordingly.
+  
+- ❗ **Start Condition Detection Strategy** – Start condition detection relies on a timer interrupt (TIM1 CC2), which triggers if no edge is detected within `TIMEOUT_START_US`.  
+  For simplicity and to avoid extra checks during time-critical polling, the timer is reset on *every* edge detection without verifying the level of the SWI line.  
+  This may result in less accurate start condition handling if the host's timing deviates from expectations.
 
 - ❗ **EEPROM write command not implemented** – While read operations work, the EEPROM write command is not yet supported.  
   This limits full bidirectional communication with the host until implemented.
 
-- ❗ **Timing sensitivity** – Host communication must follow expected bit timing precisely.  
-  Any deviation may cause synchronization issues due to the polling-based nature of the code.
+- ❗ **Timing sensitivity and synchronization** – Host communication must follow expected bit timing precisely.  
+  The current design sends logic '0' on the falling edge to reduce response delay. However, this causes the bit counter to advance before the host’s ACK/NACK is received.  
+  If not handled properly, this can lead to misalignment with the host and data errors during transmission.
 
+- ❗ **Chip Enable Signal Handling** – An external interrupt (`EXTI0_1_IRQHandler`) is used to detect when the `CHIP_ENABLE_PIN` goes low, reducing CPU usage by avoiding constant polling.  
+  When the host re-enables the chip (pin goes high), execution resumes from wherever the loop was paused.  
+  This means the emulator may resume operation mid-bit-time with outdated state variables (e.g., `swi_state`, `bit_count`, etc.), leading to potential synchronization issues.
+    
 ---
 
 ## 🚀 Future Improvements (Ideas)
