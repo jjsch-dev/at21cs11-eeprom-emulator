@@ -85,19 +85,19 @@ Used to compile embedded C code for Cortex-M0+ architecture.
    ```bash
    sha256sum -c arm-gnu-toolchain-*.tar.xz.sha256asc
    ```
-3. **Extract into the toolchain/gcc-arm/ folder
+3. **Extract** into the toolchain/gcc-arm/ folder
    ```bash
    mkdir -p toolchain/gcc-arm/
    tar -xvf arm-gnu-toolchain-*.tar.xz -C toolchain/gcc-arm/
    ```	
-4. **Add to PATH temporarily (for building):
+4. **Add** to PATH temporarily (for building):
    ```bash
    export PATH="$(pwd)/toolchain/gcc-arm/arm-gnu-toolchain-<version>-x86_64-arm-none-eabi/bin:$PATH"
    ```
 > [!NOTE]
 > Replace <version> with the actual extracted folder name.
 
-5. Verify installation:
+5. **Verify** installation:
    ```bash
    arm-none-eabi-gcc --version
    ```
@@ -109,13 +109,13 @@ We use pyOCD to program the PY32F0xx microcontroller over SWD using an ST-Link o
 
 ### 🧰 Install pyOCD Locally:
 
-1. **Create a virtual environment (recommended):
+1. **Create** a virtual environment (recommended):
    ```bash
    python3 -m venv toolchain/pyocd/venv
    source toolchain/pyocd/venv/bin/activate
    ```
    
-2. **Install pyOCD in the virtual environment :
+2. **Install** pyOCD in the virtual environment :
    ```bash
    echo 'source $(pwd)/toolchain/pyocd/venv/bin/activate' > toolchain/pyocd/activate.sh
    chmod +x toolchain/pyocd/activate.sh
@@ -132,18 +132,18 @@ pyOCD does not natively support Puya PY32 MCUs, so we must provide a device pack
 - From: [Keil Device Family Pack for PY32F0xx](https://www.keil.arm.com/packs/py32f0xx_dfp-puya/versions/)
 - File used in this project: **Puya.PY32F0xx_DFP.1.1.0.pack**
 
-2. **Place it in the `toolchain/pyocd/` folder:
+2. **Place** it in the `toolchain/pyocd/` folder:
    ```bash
    cp Puya.PY32F0xx_DFP.1.1.0.pack toolchain/pyocd/
    ```
    
-3. **Create a pyocd.yaml configuration file in your project root:
+3. **Create** a pyocd.yaml configuration file in your project root:
    ```ymal
    pack:
      - ./toolchain/pyocd/Puya.PY32F0xx_DFP.1.1.0.pack 
    ```
 
-4. **Use the config when flashing :
+4. **Use** the config when flashing :
    ```bash
    # Load firmware
    pyocd load ./swi_eeprom.hex -t py32f002ax5 --config ./pyocd.yaml
