@@ -105,7 +105,7 @@ Used to compile embedded C code for Cortex-M0+ architecture.
 
 ### 2. pyOCD (for flashing and debugging via SWD)
 
-We use pyOCD to program the PY32F0xx microcontroller over SWD using an ST-Link or CMSIS-DAP programmer.
+We use [pyOCD](https://pyocd.io/) to program the PY32F0xx microcontroller over SWD using an ST-Link or CMSIS-DAP programmer.
 
 ### 🧰 Install pyOCD Locally:
 
@@ -123,11 +123,11 @@ We use pyOCD to program the PY32F0xx microcontroller over SWD using an ST-Link o
 ---
 
 ### 3. Device Support for PY32F0xx
-pyOCD does not natively support Puya PY32 MCUs, so we must provide a device pack file .
+**pyOCD** does not natively support Puya PY32 MCUs, so we must provide a device pack file .
 
 ### 📦 Add PY32F0xx Support
 
-1. **Download the device family pack:
+1. **Download** the device family pack:
 
 - From: [Keil Device Family Pack for PY32F0xx](https://www.keil.arm.com/packs/py32f0xx_dfp-puya/versions/)
 - File used in this project: **Puya.PY32F0xx_DFP.1.1.0.pack**
