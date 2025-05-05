@@ -158,8 +158,7 @@ We use [pyOCD](https://pyocd.io/) to program the PY32F0xx microcontroller over S
    
 2. **Install** pyOCD in the virtual environment :
    ```bash
-   echo 'source $(pwd)/toolchain/pyocd/venv/bin/activate' > toolchain/pyocd/activate.sh
-   chmod +x toolchain/pyocd/activate.sh
+   pip install -U pyocd
    ```
 ---
 
