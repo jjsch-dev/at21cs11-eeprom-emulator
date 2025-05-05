@@ -365,44 +365,44 @@ static void swi_decode_low(void)
     if (bit_count >= 8) {
         //debug_toggle_pin();
         //debug_log("byte recv = 0x%02X\n", current_byte);
-		if (swi_state == STATE_RECEIVE_CMD) {
-		    uint8_t opcode  = (current_byte & AT21_OPCODE_MASK) >> AT21_OPCODE_SHIFT;
-		    uint8_t dev_addr = (current_byte & AT21_ADDR_MASK) >> AT21_ADDR_SHIFT;
-		    uint8_t rw_bit   = (current_byte & AT21_RW_MASK);
+        if (swi_state == STATE_RECEIVE_CMD) {
+            uint8_t opcode  = (current_byte & AT21_OPCODE_MASK) >> AT21_OPCODE_SHIFT;
+            uint8_t dev_addr = (current_byte & AT21_ADDR_MASK) >> AT21_ADDR_SHIFT;
+            uint8_t rw_bit   = (current_byte & AT21_RW_MASK);
 
-		    if (dev_addr == AT21_DEVICE_ADDR) {
-		        if (opcode == OPCODE_MANUFACTURER_ID) {
-		            // If the Read/Write bit is set to a logic ‘0’ to indicate a write, the device
-		            // will NACK (logic ‘1’) since the Manufacturer ID data is read-only.
-		            if (rw_bit) {
-		                // Prepare to transmit manufacturer ID
-		                response_buffer_ptr = manuf_id;
-		                response_buffer_size = sizeof(manuf_id);
-		                response_bit_index = 0;
-		                response_index = 0;
-		                swi_state = STATE_TRANSMIT;
-		                // We'll ACK on the next falling edge => set send_logic_0
-		                send_logic_0 = true;
-		            }
-		        } else if (opcode == OPCODE_EEPROM_ACCESS) {
-		            if (!rw_bit) {
-		                // Next byte => memory address
-		                swi_state = STATE_RECEIVE_ADDR;
-		            } else {
-		                response_bit_index = 0;
-		                swi_state = STATE_TRANSMIT;
-		            }
-		            // Prepare to transmit EEPROM bytes.
-		            response_buffer_ptr = eeprom_buffer;
-		            response_buffer_size = sizeof(eeprom_buffer);
-		            response_bit_index = 0;
-		            // Typically we might set send_logic_0 = true if the spec requires an ACK after the address byte.
-		            send_logic_0 = true;
-		        } else {
-		            // Unknown command => go idle
-		            swi_state = STATE_IDLE;
-		        }
-		    }
+            if (dev_addr == AT21_DEVICE_ADDR) {
+                if (opcode == OPCODE_MANUFACTURER_ID) {
+                    // If the Read/Write bit is set to a logic ‘0’ to indicate a write, the device
+                    // will NACK (logic ‘1’) since the Manufacturer ID data is read-only.
+                    if (rw_bit) {
+                        // Prepare to transmit manufacturer ID
+                        response_buffer_ptr = manuf_id;
+                        response_buffer_size = sizeof(manuf_id);
+                        response_bit_index = 0;
+                        response_index = 0;
+                        swi_state = STATE_TRANSMIT;
+                        // We'll ACK on the next falling edge => set send_logic_0
+                        send_logic_0 = true;
+                    }
+                } else if (opcode == OPCODE_EEPROM_ACCESS) {
+                    if (!rw_bit) {
+                        // Next byte => memory address
+                       swi_state = STATE_RECEIVE_ADDR;
+                    } else {
+                        response_bit_index = 0;
+                        swi_state = STATE_TRANSMIT;
+                    }
+                    // Prepare to transmit EEPROM bytes.
+                    response_buffer_ptr = eeprom_buffer;
+                    response_buffer_size = sizeof(eeprom_buffer);
+                    response_bit_index = 0;
+                    // Typically we might set send_logic_0 = true if the spec requires an ACK after the address byte.
+                    send_logic_0 = true;
+                } else {
+                    // Unknown command => go idle
+                    swi_state = STATE_IDLE;
+                }
+            }
         } else if (swi_state == STATE_RECEIVE_ADDR) {
             response_index = current_byte;
             response_bit_index = 0;
