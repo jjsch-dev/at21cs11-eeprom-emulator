@@ -63,7 +63,7 @@ The following schematic illustrates the hardware connections for the AT21CS11 EE
 | MCU              | Puya PY32F002 series (tested on SOP8 package) |
 | Clock Source     | Internal HSI oscillator set to 24 MHz |
 | SWI Pin          | PA10 (open-drain output) |
-| Enable Pin       | PA1 (active-low input) |
+| Chip Enable Pin  | PA1 (active-low input) |
 | Debug GPIO (opt) | PA3 (toggled during bit transitions for tracing) |
 | UART TX (opt)    | PA2 (for debug logging at 115200 bps) |
 | SWCLK / SWC      | PA14 (SWD clock for flashing and debugging) |
@@ -404,8 +404,8 @@ This implementation has several limitations that are important to understand bef
   The current design sends logic '0' on the falling edge to reduce response delay. However, this causes the bit counter to advance before the host’s ACK/NACK is received.  
   If not handled properly, this can lead to misalignment with the host and data errors during transmission.
 
-- ❗ **Chip Enable Signal Handling** – An external interrupt (`EXTI0_1_IRQHandler`) is used to detect when the `CHIP_ENABLE_PIN` goes low, reducing CPU usage by avoiding constant polling.  
-  When the host re-enables the chip (pin goes high), execution resumes from wherever the loop was paused.  
+- ❗ **Chip Enable Signal Handling** – An external interrupt (`EXTI0_1_IRQHandler`) is used to detect when the `CHIP_ENABLE_PIN` goes high, reducing CPU usage by avoiding constant polling.  
+  When the host re-enables the chip (pin goes low), execution resumes from wherever the loop was paused.  
   This means the emulator may resume operation mid-bit-time with outdated state variables (e.g., `swi_state`, `bit_count`, etc.), leading to potential synchronization issues.
     
 ---
