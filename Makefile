@@ -45,7 +45,7 @@ PYOCD_EXE		?= toolchain/pyocd/myenv/bin/pyocd
 # Single C and CPP source files
 CFILES		:= at21cs11_emulator.c \
 			   debug.c \
-			   py32f0xx_it.c
+			   Config/py32f0xx_it.c
 
 # ASM source folders
 ADIRS		:= User
