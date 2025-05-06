@@ -336,7 +336,7 @@ static void swi_decode_low(void)
         send_logic_0 = true;
         response_index = 0;
         response_bit_index = 0;
-        //debug_log("reset: %lu us\n", pulse_duration);
+        debug_log("reset: %lu us\n", pulse_duration);
         return;
     }
 
@@ -363,8 +363,8 @@ static void swi_decode_low(void)
     bit_count++;
 
     if (bit_count >= 8) {
-        //debug_toggle_pin();
-        //debug_log("byte recv = 0x%02X\n", current_byte);
+        debug_toggle_pin();
+        debug_log("byte recv = 0x%02X\n", current_byte);
         if (swi_state == STATE_RECEIVE_CMD) {
             uint8_t opcode  = (current_byte & AT21_OPCODE_MASK) >> AT21_OPCODE_SHIFT;
             uint8_t dev_addr = (current_byte & AT21_ADDR_MASK) >> AT21_ADDR_SHIFT;

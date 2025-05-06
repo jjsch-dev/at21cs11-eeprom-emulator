@@ -17,12 +17,13 @@
 
 #undef  ENABLE_DEBUG_PIN
 #undef  ENABLE_UART_DEBUG
-
+    
 /**
  * @brief  Initialize debug peripherals (UART TX pin and/or debug GPIO) if enabled.
  */
 void debug_init(void);
 
+#ifdef ENABLE_UART_DEBUG
 /**
  * @brief  Send a formatted string over UART if ENABLE_UART_DEBUG is defined.
  * @param  fmt  printf-style format string.
@@ -30,10 +31,32 @@ void debug_init(void);
  */
 void debug_log(const char *fmt, ...);
 
+#else
+
+/**
+ * @brief  Dummy implementation of debug_log when ENABLE_UART_DEBUG is not defined.
+ * This prevents compiler errors when debug_log is called.
+ * @param  fmt  printf-style format string (not used).
+ * @param  ...  Format arguments (not used).
+ */
+#define debug_log(fmt, ...) do {} while (0)
+
+#endif // ENABLE_UART_DEBUG
+
+#ifdef ENABLE_DEBUG_PIN
 /**
  * @brief  Toggle the debug GPIO pin if ENABLE_DEBUG_PIN is defined.
+ * Implemented as a macro.
  */
-void debug_toggle_pin(void);
+#define debug_toggle_pin() LL_GPIO_TogglePin(DBG_GPIO_Port, DBG_PIN)
+
+#else
+/**
+ * @brief  Dummy implementation of debug_toggle_pin when ENABLE_DEBUG_PIN is not defined.
+ */
+#define debug_toggle_pin() do {} while(0)
+
+#endif // ENABLE_DEBUG_PIN
 
 #endif // DEBUG_H
 

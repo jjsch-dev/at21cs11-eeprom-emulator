@@ -18,7 +18,6 @@
 #include "py32f0xx_ll_bus.h"
 #include "py32f0xx_ll_utils.h"
 
-
 #ifdef ENABLE_UART_DEBUG
 /**
  * @brief  Initialize USART1 for TX-only debug output at 115200 bps.
@@ -80,9 +79,9 @@ void debug_init(void)
 #endif
 }
 
+#ifdef ENABLE_UART_DEBUG
 void debug_log(const char *fmt, ...)
 {
-#ifdef ENABLE_UART_DEBUG
     char buf[128];
     va_list args;
     va_start(args, fmt);
@@ -94,13 +93,6 @@ void debug_log(const char *fmt, ...)
         while (!LL_USART_IsActiveFlag_TC(USART1)); // Wait for TX buffer empty
         LL_USART_ClearFlag_TC(USART1);
     }
-#endif
 }
-
-void debug_toggle_pin(void)
-{
-#ifdef ENABLE_DEBUG_PIN
-    LL_GPIO_TogglePin(DBG_GPIO_Port, DBG_PIN);
 #endif
-}
 
