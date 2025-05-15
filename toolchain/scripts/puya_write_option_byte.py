@@ -133,7 +133,7 @@ def wait_for_not_busy(target):
 def puya_write_option_byte(cpu_target, yaml_file, option_value):
     """Program the lower 16-bit option byte value into the device."""
     with ConnectHelper.session_with_chosen_probe(
-    		target_override=cpu_target,
+            target_override=cpu_target,
             config_file=yaml_file,
             connect_mode="under-reset") as session:
         target = session.target
@@ -203,9 +203,9 @@ def puya_write_option_byte(cpu_target, yaml_file, option_value):
 
         session.close()
         with ConnectHelper.session_with_chosen_probe(
-        		target_override=cpu_target,
-            	config_file=yaml_file,
-            	connect_mode="under-reset") as new_session:
+                target_override=cpu_target,
+                config_file=yaml_file,
+                connect_mode="under-reset") as new_session:
             new_target = new_session.target
             new_target.halt()
             new_live   = new_target.read32(FLASH_OPTR_ADDR)
