@@ -40,12 +40,13 @@
 #include "debug.h"
 
 #define ENABLE_START_CONDITION_DETECT   /**< Enables timeout detection for start condition */
+#define ENABLE_EEPROM_CS_PIN            /**< Enables the EEPROM chip select pin. */
 
 //  SWI Pin and Timing Definitions
 #define SWI_PIN                 LL_GPIO_PIN_10      /**< SWI pin on GPIOA */
 #define SWI_GPIO_Port           GPIOA               /**< Port for SWI pin */
-#define CHIP_ENABLE_PIN         LL_GPIO_PIN_1       /**< Enable pin on GPIOA */
-#define CHIP_ENABLE_GPIO_Port   GPIOA               /**< Port for chip enable pin */
+#define NCS_PIN                 LL_GPIO_PIN_1       /**< Chip Select pin (active low) on GPIOA */
+#define NCS_GPIO_Port           GPIOA               /**< Port for Chip Select pin (active low) */
 
 // Device Address Decoding Macros
 /** Format of an 8-bit device address byte:
@@ -211,14 +212,17 @@ void mx_gpio_init(void)
     LL_GPIO_Init(SWI_GPIO_Port, &gpio_init);
     LL_GPIO_SetOutputPin(SWI_GPIO_Port, SWI_PIN);
 
-    // PA1 as input for enable (low/disable)
-    gpio_init.Pin = CHIP_ENABLE_PIN;
+#ifdef ENABLE_EEPROM_CS_PIN
+    // PA1 configured as input for the active-low Chip Select (NCS) pin.
+    // EEPROM is selected when NCS is low.
+    gpio_init.Pin = NCS_PIN;
     gpio_init.Mode = LL_GPIO_MODE_INPUT;
-    gpio_init.Speed = LL_GPIO_SPEED_FREQ_HIGH; 
+    gpio_init.Speed = LL_GPIO_SPEED_FREQ_HIGH;
     gpio_init.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
     gpio_init.Pull = LL_GPIO_PULL_NO;
-    LL_GPIO_Init(CHIP_ENABLE_GPIO_Port, &gpio_init);
-    LL_GPIO_SetOutputPin(CHIP_ENABLE_GPIO_Port, CHIP_ENABLE_PIN);
+    LL_GPIO_Init(NCS_GPIO_Port, &gpio_init);
+    //LL_GPIO_SetOutputPin(NCS_GPIO_Port, NCS_PIN); // Consider initial state for input?
+#endif
 }
 
 /**
@@ -237,6 +241,7 @@ static void mx_exti_init(void)
     NVIC_EnableIRQ(EXTI0_1_IRQn);
 }
 
+#ifdef ENABLE_EEPROM_CS_PIN
 /**
  * @brief EXTI0_1 Interrupt handler for enable pin rising edge.
  *
@@ -255,11 +260,12 @@ void EXTI0_1_IRQHandler(void)
         LL_GPIO_SetOutputPin(SWI_GPIO_Port, SWI_PIN);
 
         // Wait in the IRQ for enable signal.
-        while (LL_GPIO_IsInputPinSet(CHIP_ENABLE_GPIO_Port, CHIP_ENABLE_PIN)); 
+        while (LL_GPIO_IsInputPinSet(NCS_GPIO_Port, NCS_PIN)); 
 
         LL_EXTI_ClearFlag(LL_EXTI_LINE_1);
     }
 }
+#endif
 
 #ifdef ENABLE_START_CONDITION_DETECT
 /**
@@ -438,8 +444,10 @@ int main(void)
     debug_init();
     debug_log("AT21CS11 emulation start\r\n");
 
+#ifdef ENABLE_EEPROM_CS_PIN
     // Wait for enable is low.
-    while (LL_GPIO_IsInputPinSet(CHIP_ENABLE_GPIO_Port, CHIP_ENABLE_PIN));
+    while (LL_GPIO_IsInputPinSet(NCS_GPIO_Port, NCS_PIN));
+#endif
 
     // Capture initial state of the SWI pin to detect future transitions
     swi_state = STATE_IDLE;

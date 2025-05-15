@@ -63,7 +63,7 @@ The following schematic illustrates the hardware connections for the AT21CS11 EE
 | MCU              | Puya PY32F002 series (tested on SOP8 package) |
 | Clock Source     | Internal HSI oscillator set to 24 MHz |
 | SWI Pin          | PA10 (open-drain output) |
-| Chip Enable Pin  | PA1 (active-low input) |
+| Chip Select Pin  | PA1 (active-low input) |
 | Debug GPIO (opt) | PA3 (toggled during bit transitions for tracing) |
 | UART TX (opt)    | PA2 (for debug logging at 115200 bps) |
 | SWCLK / SWC      | PA14 (SWD clock for flashing and debugging) |
@@ -249,10 +249,11 @@ Ensure the following connections are made between the programmer and the PY32 MC
 | Macro                         | Description |
 |-------------------------------|-------------|
 | ENABLE_START_CONDITION_DETECT | Enables timeout-based start condition detection
+| ENABLE_EEPROM_CS_PIN          | Enables the EEPROM chip select pin
 | ENABLE_UART_DEBUG             | Enables UART-based logging via USART1
 | ENABLE_DEBUG_PIN              | Toggles a debug GPIO pin during operation
 | SWI_PIN                       | Set the BUS pin, by default LL_GPIO_PIN_10
-| CHIP_ENABLE_PIN               | Set the chip enable pin, by default LL_GPIO_PIN_1
+| NCS_PIN                       | Set the negative chip select pin, by default LL_GPIO_PIN_1
 | DBG_PIN                       | Set the debug toggle pin, by default LL_GPIO_PIN_14
 | UART_TX_PIN                   | Set the UART TX pin for log, default LL_GPIO_PIN_2
 
