@@ -234,7 +234,8 @@ Ensure the following connections are made between the programmer and the PY32 MC
     ├── toolchain               	                # Local tools installation (optional / project-specific)
     │ ├── gcc-arm                                   # ARM GCC toolchain (arm-none-eabi-gcc)
     │ ├── py32f0                                    # PY32F0xx LL support library (py32f0-template)
-    │ └── pyocd                                     # pyOCD + config files for flashing via SWD
+    │ ├── pyocd                                     # pyOCD + config files for flashing via SWD
+    │ └── scripts                                   # Write/read Python scripts to modify CPU fuses
     ├── at21cs11_emulator.c     	                # Core logic for SWI EEPROM emulation
     ├── debug.h / debug.c       	                # Optional UART logging and debug pin support
     ├── eeprom_data.h           	                # Declaration of EEPROM buffer and Manufacturer ID
@@ -451,11 +452,9 @@ Raw Option-bytes word: 0x4155BEAA
 
 For a clearer understanding of the hardware connections, refer to the image below:
 
-![Debug Setup](link-to-your-image.jpg)
+![Debug Setup](images/debug_setup.png)
 
 *This image shows the PY32F0xx development board connected to an ST-Link programmer and a USB-to-TTL adapter. The wiring for the serial communication (TTL TX to Pin 8/NRST and TTL GND to GND) is clearly visible.*
-
-**Note:** Please replace `link-to-your-image.jpg` with the actual URL or relative path to the image file in your repository.
 
 5.  **🧪 Testing USART Debugging**
 
