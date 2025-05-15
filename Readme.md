@@ -276,15 +276,13 @@ make
 ```bash
 make flash
 ```
-
 ---
-
 ### 📡 Enabling USART Debugging via GPIO Repurposing
 
-To enable **USART debugging** on the PY32F0xx microcontroller, you need to repurpose **Pin 8 (NRST)** from its default **RESET** function to a **GPIO** . This is achieved by modifying the Option Bytes of the device. Below is a step-by-step guide to configure the microcontroller and enable USART debugging.
+To enable **USART debugging** on the PY32F0xx microcontroller, you need to repurpose **Pin 8 (NRST)** from its default **RESET** function to a **GPIO**. This is achieved by modifying the Option Bytes of the device. Below is a step-by-step guide to configure the microcontroller and enable USART debugging.
 
-1. **Understanding the Default Configuration**
-By default, Pin 8 (NRST) is configured as the RESET pin . To use it as a GPIO for USART debugging, you must change its function via the Option Bytes .
+1. **⚙️ Understanding the Default Configuration**
+By default, Pin 8 (NRST) is configured as the RESET pin. To use it as a GPIO for USART debugging, you must change its function via the Option Bytes.
 
 **Default Option Byte Output (Before Modification)**
 ```bash
@@ -293,171 +291,202 @@ python3 ../scripts/puya_read_option_byte.py
 Raw Option-bytes word: 0x4155BEAA
 
 → Read-Protection (RDP):
-   level 0 (inactive), byte=0xAA
+    level 0 (inactive), byte=0xAA
 
 → Brown-Out Reset (BOR):
-   enabled: False
-   threshold: 3.2 V↑ / 3.1 V↓
+    enabled: False
+    threshold: 3.2 V↑ / 3.1 V↓
 
 → Independent WDG:
-   mode: SW (SW=software, HW=hardware)
+    mode: SW (SW=software, HW=hardware)
 
 → NRST pin:
-   function: RESET
+    function: RESET
 
 → nBOOT1:
-   boot area: System-mem
+    boot area: System-mem
 
 → Complement bytes:
-   nRDP:  0x55
-   nUSER: 0x41
+    nRDP:  0x55
+    nUSER: 0x41
 ```
-
-2. **Modifying the Option Bytes**
-To repurpose Pin 8 (NRST) as a GPIO, you need to write the Option Bytes using the `puya_write_option_byte.py` script. This operation can crash the CPU if done incorrectly, so proceed with caution.
+2.  **✍️ Modifying the Option Bytes**
+    To repurpose Pin 8 (NRST) as a GPIO, you need to write the Option Bytes using the `puya_write_option_byte.py` script. This operation can crash the CPU if done incorrectly, so proceed with caution.
 
 #### 🧩 Step-by-Step Instructions:
 
-1. **Activate** the Virtual Environment:
-Ensure you have `pyOCD` installed in a virtual environment. Activate it before running the scripts: 
-```bash
-source toolchain/pyocd/venv/bin/activate
-```
+1.  **🚀 Activate** the Virtual Environment:
+    Ensure you have `pyOCD` installed in a virtual environment. Activate it before running the scripts:
 
-2. **Read** the Current Option Bytes:
-Before making changes, verify the current configuration:
-```bash
-python3 ../scripts/puya_read_option_byte.py
-```
+    ```bash
+    source toolchain/pyocd/venv/bin/activate
+    ```
 
-3. **Write** the New Option Bytes:
-Use the `puya_write_option_byte.py` script with the `--nrst_mode 1` flag to change the NRST pin function to GPIO:
-```bash
-python3 ../scripts/puya_write_option_byte.py --nrst_mode 1
-```
-Output:
-```bash
-Programming lower 16-bit option value: 0xFEAA
-Live FLASH_OPTR before programming: 0x0000FEAA
-Stored option bytes before programming (raw): 0x4155BEAA
-Unlocking FLASH_CR...
-Option bytes are locked; performing OPTKEY unlock sequence...
-Option bytes unlocked successfully.
-Writing option bytes value: 0xFEAA
-Triggering option byte programming...
-Option bytes programming sequence complete.
-Resetting device to reload option bytes...
-Live FLASH_OPTR after programming: 0x0000FEAA
-Stored option bytes after programming (raw): 0x0155FEAA
-Done.
-```
-4. **Verify** the Change:
-After writing the new option bytes, read them again to confirm the `NRST` pin is now configured as `GPIO`:
-```bash
-python3 ../scripts/puya_read_option_byte.py
-```
-Output:
-```bash
-Raw Option-bytes word: 0x0155FEAA
+2.  **🔍 Read** the Current Option Bytes:
+    Before making changes, verify the current configuration:
 
-→ Read-Protection (RDP):
-   level 0 (inactive), byte=0xAA
+    ```bash
+    python3 ../scripts/puya_read_option_byte.py
+    ```
 
-→ Brown-Out Reset (BOR):
-   enabled: False
-   threshold: 3.2 V↑ / 3.1 V↓
+3.  **💾 Write** the New Option Bytes:
+    Use the `puya_write_option_byte.py` script with the `--nrst_mode 1` flag to change the NRST pin function to GPIO:
 
-→ Independent WDG:
-   mode: SW (SW=software, HW=hardware)
+    ```bash
+    python3 ../scripts/puya_write_option_byte.py --nrst_mode 1
+    ```
 
-→ NRST pin:
-   function: GPIO
+    Output:
 
-→ nBOOT1:
-   boot area: System-mem
+    ```bash
+    Programming lower 16-bit option value: 0xFEAA
+    Live FLASH_OPTR before programming: 0x0000FEAA
+    Stored option bytes before programming (raw): 0x4155BEAA
+    Unlocking FLASH_CR...
+    Option bytes are locked; performing OPTKEY unlock sequence...
+    Option bytes unlocked successfully.
+    Writing option bytes value: 0xFEAA
+    Triggering option byte programming...
+    Option bytes programming sequence complete.
+    Resetting device to reload option bytes...
+    Live FLASH_OPTR after programming: 0x0000FEAA
+    Stored option bytes after programming (raw): 0x0155FEAA
+    Done.
+    ```
 
-→ Complement bytes:
-   nRDP:  0x55
-   nUSER: 0x01
-```
+4.  **✅ Verify** the Change:
+    After writing the new option bytes, read them again to confirm the `NRST` pin is now configured as `GPIO`:
 
-3. **Enabling USART Debugging in Code**
-Once the NRST pin is repurposed as GPIO, you can enable USART debugging by modifying the `debug.h` file:
+    ```bash
+    python3 ../scripts/puya_read_option_byte.py
+    ```
 
-1. **Enable** USART Debugging:
-Change the `ENABLE_UART_DEBUG` macro from `#undef` to `#define` in `debug.h`: 
-```c
-#define ENABLE_UART_DEBUG
-```
+    Output:
 
-2. **Recompile** the Code:
-Recompile the project to include USART debugging: 
-```bash
-make
-```
+    ```bash
+    Raw Option-bytes word: 0x0155FEAA
 
-Output:
-```bash
-Memory region         Used Size  Region Size  %age Used
-          RAM:        1432 B         3 KB     46.61%
-        FLASH:        6012 B        20 KB     29.36%
-OBJCP BIN	Build/swi_eeprom.bin
-```
+    → Read-Protection (RDP):
+        level 0 (inactive), byte=0xAA
 
-3. **Update** the Firmware:
-Flash the updated firmware to the PY32F0xx device using `pyOCD`:
-```bash
-make flash
-```
-Output:
-```bash
-toolchain/pyocd/myenv/bin/pyocd erase -t py32f002ax5 --chip --config ./toolchain/pyocd/pyocd.yaml
-Waiting for a debug probe to be connected...
-0006642 I Erasing chip... [eraser]
-0006965 I Chip erase complete [eraser]
-toolchain/pyocd/myenv/bin/pyocd load Build/swi_eeprom.elf -t py32f002ax5 --config ./toolchain/pyocd/pyocd.yaml
-0000310 I Loading /home/jjsch/3d_printer/prusa_original/rmx35/xlcd/eeprom/source/swi_eeprom_ll/Build/swi_eeprom.elf [load_cmd]
-[==================================================] 100%
-0001423 I Erased 12288 bytes (3 sectors), programmed 6144 bytes (48 pages), skipped 0 bytes (0 pages) at 5.40 kB/s [loader]
-```
+    → Brown-Out Reset (BOR):
+        enabled: False
+        threshold: 3.2 V↑ / 3.1 V↓
 
-4. **Connecting the USB TTL Adapter**
-To view debug messages, connect a **TTL to USB converter** (compatible with 3.3 V) to the PY32F0xx board:
+    → Independent WDG:
+        mode: SW (SW=software, HW=hardware)
 
-Connect :
-- TTL TX → Pin 8 (NRST/GPIO)
-- TTL GND → GND
+    → NRST pin:
+        function: GPIO
 
-Configure the Serial Terminal :
-- Open a serial terminal (e.g., PuTTY , Tera Term , CoolTerm ).
-- Set the baud rate to 115200 .
-- Ensure no flow control is enabled.
+    → nBOOT1:
+        boot area: System-mem
 
-5. **Testing USART Debugging**
+    → Complement bytes:
+        nRDP:  0x55
+        nUSER: 0x01
+    ```
 
-1. **Power On** the Board:
-When the board powers on, you should see the following message in the serial terminal:
-```plaintext
-AT21CS11 emulation start
-``` 
+3.  **💻 Enabling USART Debugging in Code**
+    Once the NRST pin is repurposed as GPIO, you can enable USART debugging by modifying the `debug.h` file:
 
-2. **Send** a Discovery Reset:
-When the host sends a discovery reset, the debug output will show:
-```plaintext
-reset: 150 us
-``` 
+    1.  **✏️ Enable** USART Debugging:
+        Change the `ENABLE_UART_DEBUG` macro from `#undef` to `#define` in `debug.h`:
+
+        ```c
+        #define ENABLE_UART_DEBUG
+        ```
+
+    2.  **🛠️ Recompile** the Code:
+        Recompile the project to include USART debugging:
+
+        ```bash
+        make
+        ```
+
+        Output:
+
+        ```bash
+        Memory region        Used Size    Region Size   %age Used
+               RAM:        1432 B           3 KB        46.61%
+             FLASH:        6012 B          20 KB        29.36%
+        OBJCP BIN    Build/swi_eeprom.bin
+        ```
+
+    3.  **🔥 Update** the Firmware:
+        Flash the updated firmware to the PY32F0xx device using `pyOCD`:
+
+        ```bash
+        make flash
+        ```
+
+        Output:
+
+        ```bash
+        toolchain/pyocd/myenv/bin/pyocd erase -t py32f002ax5 --chip --config ./toolchain/pyocd/pyocd.yaml
+        Waiting for a debug probe to be connected...
+        0006642 I Erasing chip... [eraser]
+        0006965 I Chip erase complete [eraser]
+        toolchain/pyocd/myenv/bin/pyocd load Build/swi_eeprom.elf -t py32f002ax5 --config ./toolchain/pyocd/pyocd.yaml
+        0000310 I Loading /home/jjsch/3d_printer/prusa_original/rmx35/xlcd/eeprom/source/swi_eeprom_ll/Build/swi_eeprom.elf [load_cmd]
+        [==================================================] 100%
+        0001423 I Erased 12288 bytes (3 sectors), programmed 6144 bytes (48 pages), skipped 0 bytes (0 pages) at 5.40 kB/s [loader]
+        ```
+
+4.  **🔌 Connecting the USB TTL Adapter**
+    To view debug messages, connect a **TTL to USB converter** (compatible with 3.3 V) to the PY32F0xx board:
+
+    Connect :
+
+      - TTL TX → Pin 8 (NRST/GPIO)
+      - TTL GND → GND
+
+    Configure the Serial Terminal :
+
+      - Open a serial terminal (e.g., PuTTY, Tera Term, CoolTerm).
+      - Set the baud rate to 115200.
+      - Ensure no flow control is enabled.
+
+### 📸 Debug Setup Visual
+
+For a clearer understanding of the hardware connections, refer to the image below:
+
+![Debug Setup](link-to-your-image.jpg)
+
+*This image shows the PY32F0xx development board connected to an ST-Link programmer and a USB-to-TTL adapter. The wiring for the serial communication (TTL TX to Pin 8/NRST and TTL GND to GND) is clearly visible.*
+
+**Note:** Please replace `link-to-your-image.jpg` with the actual URL or relative path to the image file in your repository.
+
+5.  **🧪 Testing USART Debugging**
+
+    1.  **⚡ Power On** the Board:
+        When the board powers on, you should see the following message in the serial terminal:
+
+        ```plaintext
+        AT21CS11 emulation start
+        ```
+
+    2.  **➡️ Send** a Discovery Reset:
+        When the host sends a discovery reset, the debug output will show:
+
+        ```plaintext
+        reset: 150 us
+        ```
+
 #### 🚨 Important Notes
-- **Risk of CPU Crash**: Modifying Option Bytes can brick the device if done incorrectly. Always back up your work and verify changes.
-- **Power Cycles**: After modifying Option Bytes, power cycle the device to ensure the new configuration takes effect.
-- **GPIO Pin Usage**: Ensure that repurposing the NRST pin as GPIO does not conflict with other critical functions in your application.
+
+  - **⚠️ Risk of CPU Crash**: Modifying Option Bytes can brick the device if done incorrectly. Always back up your work and verify changes.
+  - **🔄 Power Cycles**: After modifying Option Bytes, power cycle the device to ensure the new configuration takes effect.
+  - **📌 GPIO Pin Usage**: Ensure that repurposing the NRST pin as GPIO does not conflict with other critical functions in your application.
 
 #### 📝 Example Debug Output
+
 When enabled, the USART debug output will provide real-time insights into the emulator's state, such as:
 
-- Start conditions
-- Command decoding
-- Timing measurements
-- State transitions
+  - Start conditions
+  - Command decoding
+  - Timing measurements
+  - State transitions
 
 ---
 
