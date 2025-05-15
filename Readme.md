@@ -312,7 +312,9 @@ Raw Option-bytes word: 0x4155BEAA
     nUSER: 0x41
 ```
 2.  **✍️ Modifying the Option Bytes**
-    To repurpose Pin 8 (NRST) as a GPIO, you need to write the Option Bytes using the `puya_write_option_byte.py` script. This operation can crash the CPU if done incorrectly, so proceed with caution.
+    To repurpose Pin 8 (NRST) as a GPIO, you need to write the Option Bytes using the `puya_write_option_byte.py` script. 
+    > [!CAUTION]
+    > This operation can crash the CPU if done incorrectly, so proceed with caution.
 
 #### 🧩 Step-by-Step Instructions:
 
