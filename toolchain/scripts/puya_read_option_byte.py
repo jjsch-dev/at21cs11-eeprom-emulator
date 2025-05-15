@@ -28,7 +28,8 @@ BOR_LEVELS = {
 def parse_option_bytes(raw):
     """Break raw 0xAABBCCDD into its 8‐bit components and interpret."""
     rdp      = raw & 0xFF
-    user     = (raw >> 8) & 0xFF
+    user     = (raw >> 8) & 0xFFFF
+    user     = raw & 0xFFFF
     nrdp     = (raw >> 16) & 0xFF
     nuser    = (raw >> 24) & 0xFF
 

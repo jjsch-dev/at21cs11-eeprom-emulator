@@ -121,7 +121,7 @@ DEFAULT_RDP      = 0xAA  # 0xAA = Level 0 (inactive); 0x55 = Level 1 (active)
 DEFAULT_BOR_EN   = 0     # BOR disabled by default
 DEFAULT_BOR_LEV  = 7     # 111: BOR rising = 3.2V, falling = 3.1V
 DEFAULT_IWDG_SW  = 1     # Software watchdog enabled
-DEFAULT_NRST_MODE= 0     # 0 = GPIO mode (NRST disabled)
+DEFAULT_NRST_MODE= 0     # 0 = NRST mode (GPIO disabled)
 DEFAULT_NBOOT1   = 1     # Typically 1
 DEFAULT_RESERVED = 1     # Reserved bit default is 1
 
@@ -130,9 +130,12 @@ def wait_for_not_busy(target):
     while target.read32(FLASH_SR) & FLASH_SR_BSY:
         time.sleep(0.01)
 
-def puya_write_option_byte(option_value):
+def puya_write_option_byte(cpu_target, yaml_file, option_value):
     """Program the lower 16-bit option byte value into the device."""
-    with ConnectHelper.session_with_chosen_probe(target_override="py32f002ax5", connect_mode="under-reset") as session:
+    with ConnectHelper.session_with_chosen_probe(
+    		target_override=cpu_target,
+            config_file=yaml_file,
+            connect_mode="under-reset") as session:
         target = session.target
         target.halt()
 
@@ -199,7 +202,10 @@ def puya_write_option_byte(option_value):
         time.sleep(1)
 
         session.close()
-        with ConnectHelper.session_with_chosen_probe(target_override="py32f002ax5", connect_mode="under-reset") as new_session:
+        with ConnectHelper.session_with_chosen_probe(
+        		target_override=cpu_target,
+            	config_file=yaml_file,
+            	connect_mode="under-reset") as new_session:
             new_target = new_session.target
             new_target.halt()
             new_live   = new_target.read32(FLASH_OPTR_ADDR)
@@ -212,6 +218,10 @@ def puya_write_option_byte(option_value):
 
 def main():
     parser = argparse.ArgumentParser(description="Program option bytes on a Puya PY32F002Ax5 device.")
+    parser.add_argument("--config", "-c", default="pyocd_local.yaml",
+                   		help="pyocd config YAML file")
+    parser.add_argument("--target", "-t", default="py32f002ax5",
+                   		help="PyOCD target_override")
     parser.add_argument("--rdp", type=lambda s: int(s, 0), default=DEFAULT_RDP,
                         help="8-bit RDP value: 0xAA = Level 0 (inactive), 0x55 = Level 1 (active). (default: 0x{:X})".format(DEFAULT_RDP))
     parser.add_argument("--bor_en", type=int, choices=[0, 1], default=DEFAULT_BOR_EN,
@@ -224,7 +234,7 @@ def main():
     parser.add_argument("--iwdg_sw", type=int, choices=[0, 1], default=DEFAULT_IWDG_SW,
                         help="IWDG_SW (0 = hardware, 1 = software). (default: {0})".format(DEFAULT_IWDG_SW))
     parser.add_argument("--nrst_mode", type=int, choices=[0, 1], default=DEFAULT_NRST_MODE,
-                        help="NRST_MODE (0 = GPIO mode, 1 = reset mode). (default: {0})".format(DEFAULT_NRST_MODE))
+                        help="NRST_MODE (1 = GPIO mode, 0 = reset mode). (default: {0})".format(DEFAULT_NRST_MODE))
     parser.add_argument("--nboot1", type=int, choices=[0, 1], default=DEFAULT_NBOOT1,
                         help="nBOOT1 (0 or 1). (default: {0})".format(DEFAULT_NBOOT1))
     parser.add_argument("--reserved", type=int, choices=[0, 1], default=DEFAULT_RESERVED,
@@ -235,7 +245,7 @@ def main():
                                       args.iwdg_sw, args.nrst_mode, args.nboot1, args.reserved)
     print("Programming lower 16-bit option value: 0x{0:04X}".format(option_value))
     try:
-        puya_write_option_byte(option_value)
+        puya_write_option_byte(args.target, args.config, option_value)
     except ProbeError as pe:
         print("Probe error during session initialization:", pe)
     except Exception as e:

@@ -336,7 +336,7 @@ static void swi_decode_low(void)
         send_logic_0 = true;
         response_index = 0;
         response_bit_index = 0;
-        debug_log("reset: %lu us\n", pulse_duration);
+        debug_log("reset: %lu us\r\n", pulse_duration);
         return;
     }
 
@@ -364,7 +364,7 @@ static void swi_decode_low(void)
 
     if (bit_count >= 8) {
         debug_toggle_pin();
-        debug_log("byte recv = 0x%02X\n", current_byte);
+        debug_log("byte recv = 0x%02X\r\n", current_byte);
         if (swi_state == STATE_RECEIVE_CMD) {
             uint8_t opcode  = (current_byte & AT21_OPCODE_MASK) >> AT21_OPCODE_SHIFT;
             uint8_t dev_addr = (current_byte & AT21_ADDR_MASK) >> AT21_ADDR_SHIFT;
@@ -436,7 +436,7 @@ int main(void)
     mx_tim1_init();
     mx_exti_init();
     debug_init();
-    debug_log("AT21CS11 emulation start\n");
+    debug_log("AT21CS11 emulation start\r\n");
 
     // Wait for enable is low.
     while (LL_GPIO_IsInputPinSet(CHIP_ENABLE_GPIO_Port, CHIP_ENABLE_PIN));

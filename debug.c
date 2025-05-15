@@ -51,6 +51,7 @@ static void uart_debug_init(void)
     // Only TX 
     LL_USART_SetTransferDirection(USART1, LL_USART_DIRECTION_TX);
     LL_USART_Enable(USART1);
+    LL_USART_ClearFlag_TC(USART1);
 }
 #endif // ENABLE_UART_DEBUG
 
