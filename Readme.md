@@ -254,6 +254,7 @@ Ensure the following connections are made between the programmer and the PY32 MC
 | SWI_PIN                       | Set the BUS pin, by default LL_GPIO_PIN_10
 | CHIP_ENABLE_PIN               | Set the chip enable pin, by default LL_GPIO_PIN_1
 | DBG_PIN                       | Set the debug toggle pin, by default LL_GPIO_PIN_14
+| UART_TX_PIN                   | Set the UART TX pin for log, default LL_GPIO_PIN_2
 
 ---
 
