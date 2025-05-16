@@ -493,6 +493,87 @@ When enabled, the USART debug output will provide real-time insights into the em
 
 ---
 
+### ⏱️ Debugging with GPIO Pin Toggling for Timing Analysis
+
+This section explains how to utilize a dedicated GPIO pin to measure the timing of specific software events or code sections using an oscilloscope. By toggling a designated pin at the start and end of a code block or during a particular event, you can visually analyze the duration and synchronization on an oscilloscope. This is particularly useful for understanding the timing of the SWI bus or the execution time of CPU-intensive tasks.
+
+**Hardware Setup:**
+
+To use this debugging method, you will need an oscilloscope 🔬 connected to the designated debug pin on your PY32F0xx board. The specific pin used for this purpose is defined by the `DBG_PIN` macro (e.g., GPIO 1) in your project's configuration. You might also connect another channel of your oscilloscope to the SWI bus pin to observe its behavior in relation to the debug toggles.
+
+**(Example Setup - See Image Below):**
+
+The image below shows an example hardware setup with oscilloscope probes connected to the SWI bus pin (Channel 1 - Yellow) and the debug toggle pin (Channel 2 - Blue).
+
+![Debug Setup with Oscilloscope](images/debug_pin_connection.png)
+
+**Software Configuration:**
+
+To enable this debugging feature, you need to make the following modifications in your code:
+
+1.  **🚫 Disable EEPROM Chip Select (if using the NCS pin for debug):**
+    If you intend to use the same pin that is normally used for the EEPROM Chip Select (`NCS_PIN`) as your debug toggle pin, you **must** disable the EEPROM functionality by commenting out or undefining the `ENABLE_EEPROM_CS_PIN` macro. This prevents conflicts with the EEPROM emulation.
+
+    ```c
+    // #define ENABLE_EEPROM_CS_PIN
+    ```
+
+2.  **✅ Enable Debug Pin Toggling:**
+    Enable the debug pin toggling feature by defining the `ENABLE_DEBUG_PIN` macro in your project's configuration (e.g., in a `config.h` or `debug.h` file).
+
+    ```c
+    #define ENABLE_DEBUG_PIN
+    ```
+
+3.  **💻 Using the `debug_toggle_pin()` Macro (Example: Reset and Discovery):**
+    The following code snippets illustrate how `debug_toggle_pin()` is used to mark key events during the reset and discovery phase on the SWI bus:
+
+    ```c
+    // In the SWI bus handling logic:
+
+    // If we detect a low pulse > THRESHOLD_RESET => Enter STATE_RESET
+    if (pulse_duration > THRESHOLD_RESET) {
+        swi_state = STATE_RESET;
+        // ... other reset state updates ...
+        debug_log("reset: %lu us\r\n", pulse_duration);
+        debug_toggle_pin(); // 🟦 First toggle: Reset detected
+        return;
+    }
+
+    // ... later in the SWI bus handling, after acknowledging the reset:
+
+    if (send_logic_0) {
+        LL_GPIO_ResetOutputPin(SWI_GPIO_Port, SWI_PIN);
+        delay_us(MIN_LOW_PULSE);
+        LL_GPIO_SetOutputPin(SWI_GPIO_Port, SWI_PIN);
+        debug_toggle_pin(); // 🟦 Second toggle: SWI pin pulled low to ACK reset
+        // ... other actions ...
+    }
+    ```
+
+**Interpreting the Oscilloscope Capture (See Image Below):**
+
+The oscilloscope capture below shows the SWI bus signal (Channel 1 - Yellow) and the debug toggle pin (Channel 2 - Blue) during a reset and discovery sequence.
+
+![Oscilloscope Capture - Reset and Discovery](images/rigol_debug_pin.png)
+
+* The **yellow trace (Channel 1)** shows the activity on the SWI bus. You can observe the initial low pulse that triggers the reset detection.
+* The **blue trace (Channel 2)** shows the toggles of the debug pin (GPIO 1):
+    * The **first rising or falling edge** on the blue trace corresponds to the `debug_toggle_pin()` call when the reset condition is detected in the code.
+    * The **second rising or falling edge** on the blue trace corresponds to the `debug_toggle_pin()` call when the firmware pulls the SWI pin low to acknowledge the reset.
+
+By using the timebase of the oscilloscope, you can measure the time elapsed between these two debug pin toggles, giving you insight into the duration of the code execution and the SWI bus activity during this phase. You can also correlate the debug pin toggles with specific events on the SWI bus signal.
+
+**⚠️ Important Considerations:**
+
+* **📌 Pin Conflicts:** Be extremely careful when using the `NCS_PIN` for debugging. Ensure that `ENABLE_EEPROM_CS_PIN` is **undefined** to avoid unintended interactions with the EEPROM emulation.
+* **⚙️ Macro Availability:** The `debug_toggle_pin()` macro will only be available in your code if the `ENABLE_DEBUG_PIN` macro is defined. You might need to include a specific header file where this macro is defined.
+* **⏳ Performance Impact:** Inserting `debug_toggle_pin()` calls will introduce a small overhead in your code execution time. This is generally acceptable for debugging purposes but should be considered if you are performing very precise timing measurements. Remember to remove or comment out these calls in your final production code.
+
+This example demonstrates how you can use a dedicated debug pin and an oscilloscope to gain detailed timing information about specific parts of your software and its interaction with external buses like the SWI bus.
+
+---
+
 ### 📝 SWI Protocol Overview
 
 The **AT21CS01/11 EEPROM device** operates as a slave device using a **single-wire digital serial interface (SWI)** to communicate with a host controller. The protocol is designed for simplicity and efficiency, utilizing an 8-bit data structure where power is provided via the SI/O pin.
