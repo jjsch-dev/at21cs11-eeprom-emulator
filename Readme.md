@@ -556,7 +556,7 @@ To enable this debugging feature, you need to make the following modifications i
 The oscilloscope capture below shows the SWI bus signal **(Channel 1 - Yellow)** and the debug toggle pin **(Channel 2 - Blue)** during a reset and discovery sequence.
 
 ![Oscilloscope Capture - Reset and Discovery](images/rigol_debug_pin.png)
-
+                                              
 * The **yellow trace (Channel 1)** shows the activity on the SWI bus. You can observe the initial low pulse that triggers the reset detection.
 * The **blue trace (Channel 2)** shows the toggles of the debug pin (GPIO 1):
     * The **first rising or falling edge** on the blue trace corresponds to the `debug_toggle_pin()` call when the reset condition is detected in the code.
