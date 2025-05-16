@@ -495,15 +495,15 @@ When enabled, the USART debug output will provide real-time insights into the em
 
 ### ⏱️ Debugging with GPIO Pin Toggling for Timing Analysis
 
-This section explains how to utilize a dedicated GPIO pin to measure the timing of specific software events or code sections using an oscilloscope. By toggling a designated pin at the start and end of a code block or during a particular event, you can visually analyze the duration and synchronization on an oscilloscope. This is particularly useful for understanding the timing of the SWI bus or the execution time of CPU-intensive tasks.
+This section explains how to utilize a dedicated GPIO pin to measure the timing of specific software events or code sections using an oscilloscope. By toggling a designated pin at the start and end of a code block or during a particular event, you can visually analyze the duration and synchronization on an oscilloscope. This is particularly useful for understanding the timing of the **SWI bus** or the execution time of **code sections**.
 
 **Hardware Setup:**
 
-To use this debugging method, you will need an oscilloscope 🔬 connected to the designated debug pin on your PY32F0xx board. The specific pin used for this purpose is defined by the `DBG_PIN` macro (e.g., GPIO 1) in your project's configuration. You might also connect another channel of your oscilloscope to the SWI bus pin to observe its behavior in relation to the debug toggles.
+To use this debugging method, you will need an oscilloscope 🔬 connected to the designated debug pin on your PY32F0xx board. The specific pin used for this purpose is defined by the `DBG_PIN` macro **(e.g., GPIO 1)** in your project's configuration. You might also connect another channel of your oscilloscope to the **SWI bus pin** to observe its behavior in relation to the debug toggles.
 
 **(Example Setup - See Image Below):**
 
-The image below shows an example hardware setup with oscilloscope probes connected to the SWI bus pin (Channel 1 - Yellow) and the debug toggle pin (Channel 2 - Blue).
+The image below shows an example hardware setup with oscilloscope probes connected to the **SWI bus pin (Channel 1 - Yellow)** and the **debug toggle pin (Channel 2 - Blue)**.
 
 ![Debug Setup with Oscilloscope](images/debug_pin_connection.png)
 
@@ -553,7 +553,7 @@ To enable this debugging feature, you need to make the following modifications i
 
 **Interpreting the Oscilloscope Capture (See Image Below):**
 
-The oscilloscope capture below shows the SWI bus signal (Channel 1 - Yellow) and the debug toggle pin (Channel 2 - Blue) during a reset and discovery sequence.
+The oscilloscope capture below shows the SWI bus signal **(Channel 1 - Yellow)** and the debug toggle pin **(Channel 2 - Blue)** during a reset and discovery sequence.
 
 ![Oscilloscope Capture - Reset and Discovery](images/rigol_debug_pin.png)
 
@@ -570,7 +570,7 @@ By using the timebase of the oscilloscope, you can measure the time elapsed betw
 * **⚙️ Macro Availability:** The `debug_toggle_pin()` macro will only be available in your code if the `ENABLE_DEBUG_PIN` macro is defined. You might need to include a specific header file where this macro is defined.
 * **⏳ Performance Impact:** Inserting `debug_toggle_pin()` calls will introduce a small overhead in your code execution time. This is generally acceptable for debugging purposes but should be considered if you are performing very precise timing measurements. Remember to remove or comment out these calls in your final production code.
 
-This example demonstrates how you can use a dedicated debug pin and an oscilloscope to gain detailed timing information about specific parts of your software and its interaction with external buses like the SWI bus.
+This example demonstrates how you can use a dedicated debug pin and an oscilloscope to gain detailed timing information about specific parts of the **firmware** and its interaction with the **SWI bus**.
 
 ---
 
