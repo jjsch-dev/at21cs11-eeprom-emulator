@@ -221,15 +221,16 @@ void mx_gpio_init(void)
     gpio_init.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
     gpio_init.Pull = LL_GPIO_PULL_NO;
     LL_GPIO_Init(NCS_GPIO_Port, &gpio_init);
-    //LL_GPIO_SetOutputPin(NCS_GPIO_Port, NCS_PIN); // Consider initial state for input?
 #endif
 }
+
 
 /**
  * @brief Configure EXTI interrupt for the ENABLE pin (rising edge).
  */
 static void mx_exti_init(void)
 {
+#ifdef ENABLE_EEPROM_CS_PIN
     LL_EXTI_InitTypeDef exti_init_struct;
     exti_init_struct.Line = LL_EXTI_LINE_1;
     exti_init_struct.LineCommand = ENABLE;
@@ -239,6 +240,7 @@ static void mx_exti_init(void)
 
     NVIC_SetPriority(EXTI0_1_IRQn, 0);
     NVIC_EnableIRQ(EXTI0_1_IRQn);
+#endif
 }
 
 #ifdef ENABLE_EEPROM_CS_PIN
@@ -343,6 +345,7 @@ static void swi_decode_low(void)
         response_index = 0;
         response_bit_index = 0;
         debug_log("reset: %lu us\r\n", pulse_duration);
+        debug_toggle_pin();
         return;
     }
 
@@ -440,7 +443,9 @@ int main(void)
     system_clock_config();
     mx_gpio_init();
     mx_tim1_init();
+ 
     mx_exti_init();
+ 
     debug_init();
     debug_log("AT21CS11 emulation start\r\n");
 
@@ -471,6 +476,7 @@ int main(void)
                     LL_GPIO_ResetOutputPin(SWI_GPIO_Port, SWI_PIN);
                     delay_us(MIN_LOW_PULSE);
                     LL_GPIO_SetOutputPin(SWI_GPIO_Port, SWI_PIN);
+                    debug_toggle_pin();
                     send_logic_0 = false;
                     last_pin ^= SWI_PIN;  // Simulate an edge transition because we forced the pin low manually
                                           // Without this, the next external edge from the host could be missed

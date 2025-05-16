@@ -12,7 +12,7 @@
 #define UART_TX_PIN         LL_GPIO_PIN_2
 #define UART_TX_GPIO_Port   GPIOA
 
-#define DBG_PIN             LL_GPIO_PIN_14
+#define DBG_PIN             LL_GPIO_PIN_1
 #define DBG_GPIO_Port       GPIOA
 
 #undef  ENABLE_DEBUG_PIN
