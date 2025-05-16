@@ -515,7 +515,7 @@ To enable this debugging feature, you need to make the following modifications i
     If you intend to use the same pin that is normally used for the EEPROM Chip Select (`NCS_PIN`) as your debug toggle pin, you **must** disable the EEPROM functionality by commenting out or undefining the `ENABLE_EEPROM_CS_PIN` macro. This prevents conflicts with the EEPROM emulation.
 
     ```c
-    // #define ENABLE_EEPROM_CS_PIN
+    #undef ENABLE_EEPROM_CS_PIN
     ```
 
 2.  **✅ Enable Debug Pin Toggling:**
