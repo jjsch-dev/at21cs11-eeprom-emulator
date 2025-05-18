@@ -15,6 +15,10 @@ The project emulates basic commands like:
 
 All global state transitions are handled in the main loop with precise µs-level timing to mimic the behavior of the original IC.
 
+## 🔧 Companion Tool
+
+If you're looking for a desktop tool to send commands and test this EEPROM emulator via USB Serial, check out [PicoSWITool](https://github.com/jjsch-dev/PicoSWITool).
+
 ## 🖼️ Hardware Setup
 
 The following image shows the physical implementation of the AT21CS11 EEPROM emulator on the PY32F0xx board:
