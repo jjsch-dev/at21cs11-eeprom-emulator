@@ -305,9 +305,9 @@ Ensure the following connections are made between the programmer and the PY32 MC
     ├── debug.h / debug.c       	                # Optional UART logging and debug pin support
     ├── eeprom_data.h           	                # Declaration of EEPROM buffer and Manufacturer ID
     ├── Makefile / rules.mk     	                # Build configuration and linker flags
-    ├── pyocd.yaml                                 # Unified pyOCD configuration pointing to local packs
-    ├── bootstrap.sh                               # Linux installation toolchain.
-    ├── bootstrap.ps1                              # Windows installation toolchain.
+    ├── pyocd.yaml                                  # Unified pyOCD configuration pointing to local packs
+    ├── bootstrap.sh                                # Linux installation toolchain.
+    ├── bootstrap.ps1                               # Windows installation toolchain.
     └── README.md               	                # Project overview and instructions
 
 ---
