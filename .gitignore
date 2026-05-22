@@ -15,3 +15,10 @@ Misc/
 
 # Ignore the PY32F0 libray
 /toolchain/py32f0/py32f0-template-main/
+# Build artifacts
+Build/
+
+# Local toolchain downloads and external clones (managed by bootstrap scripts)
+toolchain/gcc-arm/
+toolchain/py32f0/py32f0-template/
+toolchain/pyocd/venv/

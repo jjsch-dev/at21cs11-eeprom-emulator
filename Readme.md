@@ -81,6 +81,67 @@ The following schematic illustrates the hardware connections for the AT21CS11 EE
 
 ---
 
+## 🚀 Quick Start Guide (Self-Contained Environment)
+
+To avoid installing compilers or cross-dependencies globally on your operating system, the entire development ecosystem is configured locally and automatically inside the project directory.
+
+> ⚠️ **Timing Precision Note:** This project relies strictly on **ARM GCC 14.2.rel1**. Using a different version may alter compiler optimizations over critical bit-banging loops, disrupting the temporal synchronization of the SWI bus with the Host.
+
+### 🐧 Linux Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/jjsch-dev/at21cs11-eeprom-emulator.git](https://github.com/jjsch-dev/at21cs11-eeprom-emulator.git)
+   cd at21cs11-eeprom-emulator
+   ```
+   
+2. **Execute the local bootstrap script:**
+This script will create the necessary folders, download the local ARM GCC 14.2 toolchain, clone the Puya LL support libraries, and create an isolated Python virtual environment (venv) for the pyocd programmer:
+   ```bash
+   chmod +x bootstrap.sh
+   ./bootstrap.sh
+   ```
+   
+3. **Compile the project:**
+   ```bash
+   make
+   ```
+   
+4. **Flash the microcontroller (ST-LINK V2):**
+   ```bash
+   make flash 
+   ```
+   
+### 🪟 Note for Windows Users (Experimental / Untested)
+A sister PowerShell script (bootstrap.ps1) is provided to automate toolchain deployment on Windows environments in the same way as Linux.
+
+🧪 This script has not been physically validated on real hardware under Windows, so it is considered experimental.
+
+To run it (requires git and python available in your global environment variables):
+
+1. Open a PowerShell terminal at the project root directory.
+
+2. Execute: .\bootstrap.ps1
+
+3. It is highly recommended to use a Git Bash environment to execute native Makefile commands (make, make flash).
+
+## 🐧 Linux USB/ST-LINK Permissions Configuration (udev)
+If running make flash hangs indefinitely with the message Waiting for a debug probe to be connected..., your user account lacks direct read/write permissions for the ST-Link V2 USB device.
+
+To fix this permanently, the project includes a preconfigured rule file under toolchain/scripts/99-stlinkv2.rules. Apply it by running:
+
+   ```bash
+   # Copy hardware rules to the system directory
+   sudo cp toolchain/scripts/99-stlinkv2.rules /etc/udev/rules.d/
+
+   # Reload the udev subsystem to apply changes immediately
+   sudo udevadm control --reload-rules
+   sudo udevadm trigger
+   ```
+After running these commands, disconnect and reconnect your ST-Link V2 programmer.
+
+---
+
 ## 🛠 Software Requirements
 
 This project assumes all development tools are placed under a local `toolchain/` directory inside your repo root:
@@ -94,7 +155,7 @@ This helps ensure consistent builds across different systems and avoids conflict
 
 Used to compile embedded C code for Cortex-M0+ architecture.
 
-#### 🔽 Installation Steps:
+#### 🔽 Manual Installation Steps:
 
 1. **Download** the latest version of ARM GCC toolchain (`arm-none-eabi-gcc`):
    - [Arm GNU Toolchain Downloads](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
@@ -244,6 +305,9 @@ Ensure the following connections are made between the programmer and the PY32 MC
     ├── debug.h / debug.c       	                # Optional UART logging and debug pin support
     ├── eeprom_data.h           	                # Declaration of EEPROM buffer and Manufacturer ID
     ├── Makefile / rules.mk     	                # Build configuration and linker flags
+    ├── pyocd.yaml                              # Unified pyOCD configuration pointing to local packs
+    ├── bootstrap.sh                            # Linux installation toolchain.
+    ├── bootstrap.ps1                           # Windows installation toolchain.
     └── README.md               	                # Project overview and instructions
 
 ---

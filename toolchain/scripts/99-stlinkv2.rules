@@ -1,0 +1,2 @@
+# STMicroelectronics ST-LINK/V2 permissions for pyOCD access
+SUBSYSTEMS=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="3748", MODE="0666"

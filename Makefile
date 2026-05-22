@@ -30,13 +30,13 @@ FLASH_PROGRM	?= pyocd
 
 ##### Toolchains #######
 
-ARM_TOOLCHAIN	?= toolchain/gcc-arm/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi/bin
+ARM_TOOLCHAIN	?= $(CURDIR)/toolchain/gcc-arm/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi/bin
 
 # path to JLinkExe
 JLINKEXE		?= /opt/SEGGER/JLink/JLinkExe
 
 # path to PyOCD
-PYOCD_EXE		?= toolchain/pyocd/myenv/bin/pyocd
+PYOCD_EXE		?= $(CURDIR)/toolchain/pyocd/venv/bin/pyocd
 
 ##### Paths ############
 
@@ -53,14 +53,14 @@ ADIRS		:= User
 AFILES		:= 
 
 # Assuming you're inside 'source/swi_debug'
-LIB_ROOT := toolchain/py32f0/py32f0-template-main/
+LIB_ROOT := toolchain/py32f0/py32f0-template/
 
 # Include paths
 INCLUDES	:= $(LIB_ROOT)Libraries/CMSIS/Core/Include \
 			   $(LIB_ROOT)Libraries/CMSIS/Device/PY32F0xx/Include \
 			   $(CDIRS) \
 			   ./Config
-				 
+			   
 ##### Library Paths ############
 
 # Library flags
